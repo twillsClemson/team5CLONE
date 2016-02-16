@@ -1,32 +1,45 @@
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'eclipse'
+apply plugin: 'jacoco'
 
-sourceCompatibility = 1.5
-version = '1.0'
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'Gradle Quickstart',
-                   'Implementation-Version': version
-    }
-}
+
+mainClassName = "MainWindow"
+
+// Ensure Java 1.7 compatibility
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories {
-    mavenCentral()
+     jcenter()     
 }
 
 dependencies {
-    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
-    testCompile group: 'junit', name: 'junit', version: '4.+'
+  // Include all jars in lib folder:
+  compile fileTree(dir: 'lib', include: ['*.jar'])
+  
+  compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
+  compile 'javax.media:jmf:2.1.1e'
+  compile 'com.google.code.gson:gson:2.6.1'
+  
+  testCompile 'junit:junit:4.12'
 }
 
-test {
-    systemProperties 'property': 'value'
-}
-
-uploadArchives {
-    repositories {
-       flatDir {
-           dirs 'repos'
-       }
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': "$mainClassName"
     }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+}
+
+artifacts {
+    archives fatJar
 }
