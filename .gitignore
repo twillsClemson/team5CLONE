@@ -1,1 +1,9 @@
 /bin/
+*.classpath
+*.mp3
+.gradle
+.bin
+build
+.project
+.settings
+*.bin
