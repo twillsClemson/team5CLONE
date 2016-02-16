@@ -9,20 +9,15 @@ import java.io.IOException;
 public class Settings {
 	private static Settings set = null;
 	private ArrayList<UserProfiles> profiles = null;
-	private ArrayList<Album> approved1 = null;
-	private ArrayList<Album> approved2 = null;
-	private ArrayList<Album> approved3 = null;
-	private ArrayList<Album> approved4 = null;
-	private ArrayList<Album> approved5 = null;
+	private ArrayList<ArrayList<Album> > approved = null;
 	private String url = null;
-	public Settings()
+	private Settings()
 	{
 		profiles = new ArrayList<UserProfiles>();
-		approved1 = new ArrayList<Album>();
-		approved2 = new ArrayList<Album>();
-		approved3 = new ArrayList<Album>();
-		approved4 = new ArrayList<Album>();
-		approved5 = new ArrayList<Album>();
+		for(int i = 0; i < 5; i++)
+		{
+			approved.add(new ArrayList<Album>());
+		}
 		url = "";
 	}
 
@@ -35,22 +30,9 @@ public class Settings {
 
 	public void addApprovedAlbum(int approvalLevel, Album album)
 	{
-		switch(approvalLevel){
-		case 1:
-			approved1.add(album);
-			break;
-		case 2:
-			approved2.add(album);
-			break;
-		case 3:
-			approved3.add(album);
-			break;
-		case 4:
-			approved4.add(album);
-			break;
-		case 5:
-			approved5.add(album);
-			break;
+		for(int i = 0; i < approvalLevel; i++)
+		{
+			approved.get(i).add(album);
 		}
 	}
 
