@@ -1,1 +1,1 @@
-{"profiles":[],"approved":[[{"name":"","approvalLevel":1}],[],[],[],[]],"url":""}
+{"profiles":[{"name":"John"}],"approvalLevels":5,"approved":[[{"name":"Album 1","approvalLevel":1},{"name":"Second Album","approvalLevel":4}],[{"name":"Second Album","approvalLevel":4}],[{"name":"Second Album","approvalLevel":4}],[{"name":"Second Album","approvalLevel":4}],[]],"url":""}

@@ -11,8 +11,11 @@ import java.io.IOException;
 public class Settings {
 	private static Settings set = null;
 	private ArrayList<UserProfiles> profiles = null;
+	private final int approvalLevels = 5;
 	private ArrayList<ArrayList<Album>> approved = null;
 	private String url = null;
+	public static final String tempFilePath = "./temp/Settings.json";
+
 
 	private Settings() {
 		profiles = new ArrayList<UserProfiles>();
@@ -23,6 +26,21 @@ public class Settings {
 		}
 		url = "";
 	}
+	
+	public ArrayList<ArrayList<Album>> getApproved()
+	{
+		return approved;
+	}
+	
+	public ArrayList<UserProfiles> getProfiles()
+	{
+		return profiles;
+	}
+	
+	public void addUserProfile(UserProfiles user)
+	{
+		profiles.add(user);
+	}
 
 	public static Settings getInstance() {
 		if (set == null)
@@ -30,9 +48,16 @@ public class Settings {
 
 		return set;
 	}
+	
+	public static Settings resetSettings()
+	{
+		set = null;
+		set = Settings.getInstance();
+		return set;
+	}
 
 	public void addApprovedAlbum(int approvalLevel, Album album) {
-		for (int i = 0; i < approvalLevel; i++) {
+		for (int i = Math.min(approvalLevel - 1, approvalLevels - 1); i >= 0 ; i--) {
 			approved.get(i).add(album);
 		}
 	}
@@ -45,7 +70,7 @@ public class Settings {
 		Gson gson = new Gson();
 		String json = gson.toJson(Settings.getInstance());
 		try {
-			FileWriter writer = new FileWriter("./temp/Settings.json");
+			FileWriter writer = new FileWriter(tempFilePath);
 			writer.write(json);
 			writer.close();
 
@@ -55,18 +80,27 @@ public class Settings {
 
 	}
 
-	public void readSettings() {
+	public Settings readSettings() {
 		Gson gson = new Gson();
 		String json = gson.toJson(Settings.getInstance());
 		System.out.println("JSON = " + json);
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader("./temp/Settings.json"));
+			BufferedReader reader = new BufferedReader(new FileReader(tempFilePath));
 			set = gson.fromJson(reader, Settings.class);
 			System.out.println("JSON = " + gson.toJson(set));
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		return set;
 
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Settings = [profiles=" + profiles + ", approvalLevels="
+				+ approvalLevels + ", approved=" + approved + ", url=" + url + "]";
 	}
 }
