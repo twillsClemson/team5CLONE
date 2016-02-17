@@ -15,16 +15,17 @@ public class Settings {
 	private ArrayList<ArrayList<Album>> approved = null;
 	private String url = null;
 	public static final String tempFilePath = "./temp/Settings.json";
+	public static final String defaultURL = "http://127.0.0.1:5001/upnp/control/content_directory";
 
 
 	private Settings() {
 		profiles = new ArrayList<UserProfiles>();
 
 		approved = new ArrayList<ArrayList<Album>>();
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < approvalLevels; i++) {
 			approved.add(new ArrayList<Album>());
 		}
-		url = "";
+		url = defaultURL;
 	}
 	
 	public ArrayList<ArrayList<Album>> getApproved()
@@ -65,6 +66,11 @@ public class Settings {
 	public void setServerURL(String ServerURL) {
 		url = ServerURL;
 	}
+	
+	public String getServerURL()
+	{
+		return url;
+	}
 
 	public void writeSettings() {
 		Gson gson = new Gson();
@@ -83,11 +89,11 @@ public class Settings {
 	public Settings readSettings() {
 		Gson gson = new Gson();
 		String json = gson.toJson(Settings.getInstance());
-		System.out.println("JSON = " + json);
+//		System.out.println("JSON = " + json);
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(tempFilePath));
 			set = gson.fromJson(reader, Settings.class);
-			System.out.println("JSON = " + gson.toJson(set));
+//			System.out.println("JSON = " + gson.toJson(set));
 
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -16,24 +16,33 @@ public class GSON_TEST
 {
 
 	@Test
-	public void testWrite()
+	public void testSettingsSave()
 	{
+		// Initialize Settings class
 		Settings settings = Settings.getInstance();
-		Album a = new Album();
-		a.setName("This album");
-		a.setApprovalLevel(3);
-		settings.addApprovedAlbum(a.approvalLevel, a);
+		
+		// Add arbitrary album
+		Album album = new Album();
+		album.setName("This album");
+		album.setApprovalLevel(3);
+		settings.addApprovedAlbum(album.approvalLevel, album);
+		
+		// Add arbitrary user
+		UserProfiles user = new UserProfiles();
+		user.setName("Jack");
+		settings.addUserProfile(user);
+		
+		// Write settings
 		settings.writeSettings();
 
+		// Use Gson to compare contents of written file to expected json String
 		Gson gson = new Gson();
 		String json = gson.toJson(Settings.getInstance());
-//		System.out.println("JSON = " + json);
 		try
 		{
 			// Read entire file into string
 			String contents = new String(Files.readAllBytes(Paths
 					.get(Settings.tempFilePath)));
-//			System.out.println("    JSON: " + json + "\nContents: " + contents);
 
 			assertEquals(json, contents);
 
@@ -84,9 +93,10 @@ public class GSON_TEST
 		// Restore old Settings, and ensure that the new Settings is the same as it was before
 		settings = settings.readSettings();
 		json2 = gson.toJson(Settings.getInstance());
-
 		assertEquals(json1, json2);
 		
+		// Assert that the URL was restored
+		assertEquals(Settings.defaultURL, settings.getServerURL());
 		
 		// There should be two albums in the first approval level,
 		// one album in levels 2-4, and no albums in level 5
@@ -95,20 +105,27 @@ public class GSON_TEST
 		assertEquals(1, settings.getApproved().get(1).size());
 		assertEquals(0, settings.getApproved().get(4).size());
 		
-		// Assert that the albums are the ones we expect
-		assertTrue(settings.getApproved().get(0).get(0).getName().equals("Album 1"));
-		assertTrue(settings.getApproved().get(0).get(0).getApprovalLevel() == 1);
-		
-		assertTrue(settings.getApproved().get(0).get(1).getName().equals("Second Album"));
-		assertTrue(settings.getApproved().get(0).get(1).getApprovalLevel() == 4);
+		// Assert that the albums available are the ones we expect
+		assertEquals("Album 1", settings.getApproved().get(0).get(0).getName());
+		assertEquals(1, settings.getApproved().get(0).get(0).getApprovalLevel());
+//		assertTrue(.equals("Album 1"));
+//		assertTrue( == 1);
+	
+		assertEquals("Second Album", settings.getApproved().get(0).get(1).getName());
+		assertEquals(4, settings.getApproved().get(0).get(1).getApprovalLevel());
+//		assertTrue(.equals("Second Album"));
+//		assertTrue( == 4);
 		
 		for(int i = 1; i < 4; i++)
 		{
-			assertTrue(settings.getApproved().get(i).get(0).getName().equals("Second Album"));
-			assertTrue(settings.getApproved().get(i).get(0).getApprovalLevel() == 4);
+			assertEquals("Second Album", settings.getApproved().get(i).get(0).getName());
+			assertEquals(4, settings.getApproved().get(i).get(0).getApprovalLevel());
+//			assertTrue(settings.getApproved().get(i).get(0).getName().equals("Second Album"));
+//			assertTrue(settings.getApproved().get(i).get(0).getApprovalLevel() == 4);
 		}
 		
-		assertTrue(settings.getProfiles().get(0).getName().equals("John"));
+		assertEquals("John", settings.getProfiles().get(0).getName());
+//		assertTrue(settings.getProfiles().get(0).getName().equals("John"));
 	}
 	
 	
