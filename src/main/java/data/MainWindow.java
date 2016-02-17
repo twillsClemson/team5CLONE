@@ -31,6 +31,7 @@ public class MainWindow {
 	CardLayout cl = new CardLayout();
 	private JPasswordField passwordField;
 	private JTable albumTable;
+	private static SettingsWindow settingsWindow = null;
 	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 
 	/**
@@ -164,6 +165,19 @@ public class MainWindow {
 		});
 		
 		JButton settingsButton = new JButton("Settings");
+		settingsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(settingsWindow == null)
+				{
+					settingsWindow = new SettingsWindow();
+					settingsWindow.main(null);
+				}
+				else
+				{
+					settingsWindow.makeVisible();
+				}
+			}
+		});
 		
 		JPanel playerPanel = new JPanel();
 		

@@ -22,7 +22,7 @@ public class SettingsWindow {
 	private JTextField txtDefaultUrl;
 	private JTable table;
 	private JTable table_1;
-
+	private static SettingsWindow window = null;
 	/**
 	 * Launch the application.
 	 */
@@ -30,15 +30,20 @@ public class SettingsWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					SettingsWindow window = new SettingsWindow();
-					window.frame.setVisible(true);
+					window = new SettingsWindow();
+					makeVisible();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 	}
-
+	
+	public static void makeVisible()
+	{
+		window.frame.setVisible(true);
+	}
+	
 	/**
 	 * Create the application.
 	 */
@@ -52,7 +57,7 @@ public class SettingsWindow {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 500, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
