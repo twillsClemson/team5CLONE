@@ -7,7 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -28,6 +31,7 @@ public class MainWindow {
 	CardLayout cl = new CardLayout();
 	private JPasswordField passwordField;
 	private JTable albumTable;
+	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 
 	/**
 	 * Launch the application.
@@ -43,6 +47,8 @@ public class MainWindow {
 	}
 
 	public MainWindow() {
+		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		
 		frame.setResizable(false);
 		frame.setSize(1000, 750);
 
@@ -239,20 +245,43 @@ public class MainWindow {
 					.addContainerGap())
 		);
 		
-		albumTable = new JTable();
+		JTable albumTable = new JTable() {
+	        private static final long serialVersionUID = 1L;
+
+	        public boolean isCellEditable(int row, int column) {                
+	                return false;               
+	        };
+	    };
+		albumTable.setShowGrid(false);
+		albumTable.setBackground(null);
+		albumTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		JTableHeader header = albumTable.getTableHeader();
+		header.setBackground(Color.black);
+		header.setForeground(Color.white);
 		albumTable.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
+				{new Integer(1), "Symphony #9 in D minor", "24:25"},
+				{new Integer(2), "Moonlight Sonata", "14:59"},
+				{new Integer(3), "Pathetique", "20:18"},
+				{new Integer(4), "Emperor Concerto", "7:45"},
 				{null, null, null},
 				{null, null, null},
 			},
 			new String[] {
-				"Track Number", "Track Name", "Song Duration"
+				"#", "Track Name", "Song Duration"
 			}
 		));
+		TableColumn trackNumber = albumTable.getColumnModel().getColumn(0);
+		trackNumber.setPreferredWidth(50);
+		trackNumber.setCellRenderer(centerRenderer);
+		TableColumn trackName = albumTable.getColumnModel().getColumn(1);
+		trackName.setPreferredWidth(525);
+		trackName.setCellRenderer(centerRenderer);
+		TableColumn trackDuration = albumTable.getColumnModel().getColumn(2);
+		trackDuration.setPreferredWidth(125);
+		trackDuration.setCellRenderer(centerRenderer);
+		albumTable.getTableHeader().setReorderingAllowed(false);
+		albumTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
 		scrollPane.setViewportView(albumTable);
 		albumListPanel.setLayout(gl_albumListPanel);
 		
@@ -265,29 +294,36 @@ public class MainWindow {
 		lblAlbumArtist.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
 		JButton favoriteAlbumButton = new JButton("Favorite Album");
+		
+		JButton restrictButton = new JButton("Restrict Album");
 		GroupLayout gl_albumInfoPanel = new GroupLayout(albumInfoPanel);
 		gl_albumInfoPanel.setHorizontalGroup(
-			gl_albumInfoPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_albumInfoPanel.createSequentialGroup()
-					.addContainerGap(322, Short.MAX_VALUE)
+			gl_albumInfoPanel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_albumInfoPanel.createSequentialGroup()
+					.addContainerGap(314, Short.MAX_VALUE)
 					.addGroup(gl_albumInfoPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_albumInfoPanel.createSequentialGroup()
+						.addGroup(Alignment.TRAILING, gl_albumInfoPanel.createSequentialGroup()
 							.addComponent(lblAlbumArtist, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 170, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
 							.addComponent(favoriteAlbumButton, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE))
-						.addComponent(lblAlbumTitle, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE))
+						.addGroup(Alignment.TRAILING, gl_albumInfoPanel.createSequentialGroup()
+							.addComponent(lblAlbumTitle, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
+							.addComponent(restrictButton, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
 		gl_albumInfoPanel.setVerticalGroup(
-			gl_albumInfoPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_albumInfoPanel.createSequentialGroup()
-					.addContainerGap()
+			gl_albumInfoPanel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(Alignment.LEADING, gl_albumInfoPanel.createSequentialGroup()
+					.addGap(18)
 					.addComponent(lblAlbumTitle)
 					.addGap(18)
 					.addComponent(lblAlbumArtist)
-					.addContainerGap(23, Short.MAX_VALUE))
-				.addGroup(Alignment.TRAILING, gl_albumInfoPanel.createSequentialGroup()
-					.addContainerGap(60, Short.MAX_VALUE)
+					.addContainerGap(16, Short.MAX_VALUE))
+				.addGroup(gl_albumInfoPanel.createSequentialGroup()
+					.addContainerGap(19, Short.MAX_VALUE)
+					.addComponent(restrictButton)
+					.addGap(18)
 					.addComponent(favoriteAlbumButton)
 					.addContainerGap())
 		);
@@ -310,37 +346,45 @@ public class MainWindow {
 		
 		JButton stopButton = new JButton("Stop");
 		stopButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		
+		JLabel lblSongName = new JLabel("Song Name - Album Name");
+		lblSongName.setFont(new Font("Tahoma", Font.BOLD, 16));
 		GroupLayout gl_playControlPanel = new GroupLayout(playControlPanel);
 		gl_playControlPanel.setHorizontalGroup(
 			gl_playControlPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_playControlPanel.createSequentialGroup()
+					.addContainerGap()
 					.addGroup(gl_playControlPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_playControlPanel.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(label)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(slider, GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(label_1))
-						.addGroup(gl_playControlPanel.createSequentialGroup()
-							.addGap(171)
-							.addComponent(pauseButton, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(playButton, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap())
+						.addGroup(gl_playControlPanel.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_playControlPanel.createSequentialGroup()
+								.addComponent(label)
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(slider, GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(label_1)
+								.addContainerGap())
+							.addGroup(Alignment.TRAILING, gl_playControlPanel.createSequentialGroup()
+								.addComponent(pauseButton, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(playButton, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.UNRELATED)
+								.addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
+								.addGap(183)))
+						.addGroup(Alignment.TRAILING, gl_playControlPanel.createSequentialGroup()
+							.addComponent(lblSongName)
+							.addGap(254))))
 		);
 		gl_playControlPanel.setVerticalGroup(
-			gl_playControlPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_playControlPanel.createSequentialGroup()
-					.addContainerGap(31, Short.MAX_VALUE)
+			gl_playControlPanel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_playControlPanel.createSequentialGroup()
+					.addComponent(lblSongName)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_playControlPanel.createParallelGroup(Alignment.TRAILING)
 						.addGroup(gl_playControlPanel.createParallelGroup(Alignment.BASELINE)
 							.addComponent(pauseButton)
 							.addComponent(playButton, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
 						.addComponent(stopButton, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
+					.addPreferredGap(ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
 					.addGroup(gl_playControlPanel.createParallelGroup(Alignment.TRAILING)
 						.addComponent(slider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(label_1)
@@ -355,6 +399,7 @@ public class MainWindow {
 		frame.getContentPane().add(panelControl);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
+		passwordField.requestFocusInWindow();
 	}
 	
 	private void checkPassword()
@@ -378,25 +423,19 @@ public class MainWindow {
 		JPanel template = new JPanel();
 		template.setName(tabName);
 		
+		UIManager.put("Tree.rendererFillBackground", false);
 		JTree tree = new JTree();
+		
+		tree.setBackground(null);
 		tree.setModel(new DefaultTreeModel(
 			new DefaultMutableTreeNode(tabName) {
 				{
 					DefaultMutableTreeNode node_1;
 					node_1 = new DefaultMutableTreeNode("Bach");
-						node_1.add(new DefaultMutableTreeNode("Song 1"));
-						node_1.add(new DefaultMutableTreeNode("Song 2"));
-						node_1.add(new DefaultMutableTreeNode("Song 3"));
 					add(node_1);
 					node_1 = new DefaultMutableTreeNode("Beethoven");
-						node_1.add(new DefaultMutableTreeNode("Song 1"));
-						node_1.add(new DefaultMutableTreeNode("Song 2"));
-						node_1.add(new DefaultMutableTreeNode("Song 3"));
 					add(node_1);
 					node_1 = new DefaultMutableTreeNode("Motzart");
-						node_1.add(new DefaultMutableTreeNode("Song 1"));
-						node_1.add(new DefaultMutableTreeNode("Song 2"));
-						node_1.add(new DefaultMutableTreeNode("Song 3"));
 					add(node_1);
 				}
 			}
