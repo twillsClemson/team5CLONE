@@ -6,7 +6,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import org.eclipse.wb.swing.FocusTraversalOnArray;
+//import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -209,7 +209,7 @@ public class SettingsWindow {
 		scrollPane.setViewportView(table);
 		panel_1.setLayout(gl_panel_1);
 		frame.getContentPane().setLayout(groupLayout);
-		frame.getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{tabbedPane}));
+		//frame.getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{tabbedPane}));
 	}
 	public String getFrameName() {
 		return frame.getName();
