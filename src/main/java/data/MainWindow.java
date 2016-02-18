@@ -109,6 +109,15 @@ public class MainWindow {
 			}
 		});
 		
+		JLabel lblUser = new JLabel("User 1");
+		lblUser.setFont(new Font("Tahoma", Font.BOLD, 18));
+		
+		JLabel lblUser_1 = new JLabel("User 2");
+		lblUser_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+		
+		JLabel lblUser_2 = new JLabel("User 3");
+		lblUser_2.setFont(new Font("Tahoma", Font.BOLD, 18));
+		
 		GroupLayout gl_loginPanel = new GroupLayout(loginPanel);
 		gl_loginPanel.setHorizontalGroup(
 			gl_loginPanel.createParallelGroup(Alignment.LEADING)
@@ -129,21 +138,34 @@ public class MainWindow {
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(userThreeButton, GroupLayout.PREFERRED_SIZE, 244, GroupLayout.PREFERRED_SIZE)
 							.addGap(141))))
+				.addGroup(gl_loginPanel.createSequentialGroup()
+					.addGap(215)
+					.addComponent(lblUser)
+					.addGap(180)
+					.addComponent(lblUser_1, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE)
+					.addGap(182)
+					.addComponent(lblUser_2, GroupLayout.PREFERRED_SIZE, 57, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(257, Short.MAX_VALUE))
 		);
 		gl_loginPanel.setVerticalGroup(
 			gl_loginPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_loginPanel.createSequentialGroup()
 					.addGap(158)
 					.addGroup(gl_loginPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(userTwoButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(userTwoButton, GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
 						.addComponent(userThreeButton, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
-						.addComponent(userOneButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addGap(95)
+						.addComponent(userOneButton, GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_loginPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblUser_1, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblUser)
+						.addComponent(lblUser_2, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+					.addGap(70)
 					.addGroup(gl_loginPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblEnterPin)
 						.addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(loginButton))
-					.addGap(333))
+					.addGap(287))
 		);
 		userOneButton.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog1.png")));
 		userTwoButton.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog2.png")));
