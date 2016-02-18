@@ -114,6 +114,9 @@ public class MainWindow {
 							.addComponent(userThreeButton, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE)
 							.addGap(145))))
 		);
+		userOneButton.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog1-Silhouettes.jpg")));
+		userTwoButton.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog2-Silhouettes.jpg")));
+		userThreeButton.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog3-Silhouettes.jpg")));
 		gl_loginPanel.setVerticalGroup(
 			gl_loginPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_loginPanel.createSequentialGroup()
