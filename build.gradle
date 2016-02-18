@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 apply plugin: 'jacoco'
 
 
-mainClassName = "MainWindow"
+mainClassName = "data.MainWindow"
 
 // Ensure Java 1.7 compatibility
 sourceCompatibility = 1.7
