@@ -19,11 +19,10 @@ import java.awt.Dimension;
 
 public class SettingsWindow {
 
-	private JFrame frame;
+	private static JFrame frame;
 	private JTextField txtDefaultUrl;
 	private JTable table;
 	private JTable table_1;
-	private static SettingsWindow window = null;
 	/**
 	 * Launch the application.
 	 */
@@ -31,7 +30,6 @@ public class SettingsWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					window = new SettingsWindow();
 					makeVisible();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -42,7 +40,8 @@ public class SettingsWindow {
 	
 	public static void makeVisible()
 	{
-		window.frame.setVisible(true);
+		frame.setVisible(true);
+		
 	}
 	
 	/**

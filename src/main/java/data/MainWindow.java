@@ -15,6 +15,7 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
+import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -25,9 +26,9 @@ public class MainWindow {
 	JPanel panelControl = new JPanel();
 	JPanel loginPanel = new JPanel();
 	JPanel mediaPlayerPanel = new JPanel();
-	JButton userOneButton = new JButton("User One");
-	JButton userTwoButton = new JButton("User Two");
-	JButton userThreeButton = new JButton("User Three");
+	JButton userOneButton = new JButton("");
+	JButton userTwoButton = new JButton("");
+	JButton userThreeButton = new JButton("");
 	CardLayout cl = new CardLayout();
 	private JPasswordField passwordField;
 	private JTable albumTable;
@@ -49,6 +50,21 @@ public class MainWindow {
 
 	public MainWindow() {
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		Border emptyBorder = BorderFactory.createEmptyBorder();
+		userOneButton.setBorder(emptyBorder);
+		userOneButton.setOpaque(false);
+		userOneButton.setContentAreaFilled(false);
+		userOneButton.setBorderPainted(false);
+		
+		userTwoButton.setBorder(emptyBorder);
+		userTwoButton.setOpaque(false);
+		userTwoButton.setContentAreaFilled(false);
+		userTwoButton.setBorderPainted(false);
+		
+		userThreeButton.setBorder(emptyBorder);
+		userThreeButton.setOpaque(false);
+		userThreeButton.setContentAreaFilled(false);
+		userThreeButton.setBorderPainted(false);
 		
 		frame.setResizable(false);
 		frame.setSize(1000, 750);
@@ -111,20 +127,17 @@ public class MainWindow {
 						.addGroup(gl_loginPanel.createSequentialGroup()
 							.addComponent(userTwoButton, GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(userThreeButton, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE)
-							.addGap(145))))
+							.addComponent(userThreeButton, GroupLayout.PREFERRED_SIZE, 244, GroupLayout.PREFERRED_SIZE)
+							.addGap(141))))
 		);
-		userOneButton.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog1-Silhouettes.jpg")));
-		userTwoButton.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog2-Silhouettes.jpg")));
-		userThreeButton.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog3-Silhouettes.jpg")));
 		gl_loginPanel.setVerticalGroup(
 			gl_loginPanel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_loginPanel.createSequentialGroup()
 					.addGap(158)
 					.addGroup(gl_loginPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(userTwoButton, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-						.addComponent(userThreeButton, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
-						.addComponent(userOneButton, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE))
+						.addComponent(userTwoButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(userThreeButton, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
+						.addComponent(userOneButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 					.addGap(95)
 					.addGroup(gl_loginPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblEnterPin)
@@ -132,6 +145,9 @@ public class MainWindow {
 						.addComponent(loginButton))
 					.addGap(333))
 		);
+		userOneButton.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog1.png")));
+		userTwoButton.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog2.png")));
+		userThreeButton.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog3.png")));
 		loginPanel.setLayout(gl_loginPanel);
 
 		userOneButton.addActionListener(new ActionListener() {
@@ -166,7 +182,6 @@ public class MainWindow {
 				cl.show(panelControl, "1");
 			}
 		});
-		
 		JButton settingsButton = new JButton("Settings");
 		settingsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
