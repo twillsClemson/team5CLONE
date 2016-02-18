@@ -108,33 +108,16 @@ public class GSON_TEST
 		// Assert that the albums available are the ones we expect
 		assertEquals("Album 1", settings.getApproved().get(0).get(0).getName());
 		assertEquals(1, settings.getApproved().get(0).get(0).getApprovalLevel());
-//		assertTrue(.equals("Album 1"));
-//		assertTrue( == 1);
 	
 		assertEquals("Second Album", settings.getApproved().get(0).get(1).getName());
 		assertEquals(4, settings.getApproved().get(0).get(1).getApprovalLevel());
-//		assertTrue(.equals("Second Album"));
-//		assertTrue( == 4);
 		
 		for(int i = 1; i < 4; i++)
 		{
 			assertEquals("Second Album", settings.getApproved().get(i).get(0).getName());
 			assertEquals(4, settings.getApproved().get(i).get(0).getApprovalLevel());
-//			assertTrue(settings.getApproved().get(i).get(0).getName().equals("Second Album"));
-//			assertTrue(settings.getApproved().get(i).get(0).getApprovalLevel() == 4);
 		}
 		
 		assertEquals("John", settings.getProfiles().get(0).getName());
-//		assertTrue(settings.getProfiles().get(0).getName().equals("John"));
 	}
-	
-	
-
-	/*
-	 * Settings settings = Settings.getInstance(); Album a = new Album();
-	 * settings.addApprovedAlbum(a.approvalLevel, a); settings.writeSettings();
-	 * settings.readSettings();
-	 */
-
 }
-
