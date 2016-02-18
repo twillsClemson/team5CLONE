@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
+import java.awt.Dimension;
 
 public class SettingsWindow {
 
@@ -49,6 +50,8 @@ public class SettingsWindow {
 	 */
 	public SettingsWindow() {
 		initialize();
+		
+		
 	}
 
 	/**
@@ -56,7 +59,11 @@ public class SettingsWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 500, 300);
+		//frame.setPreferredSize(new Dimension(500, 300));
+		//frame.setMaximumSize(new Dimension(500, 300));
+		frame.setVisible(true);
+		frame.setSize(new Dimension(500, 300));
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -203,5 +210,11 @@ public class SettingsWindow {
 		panel_1.setLayout(gl_panel_1);
 		frame.getContentPane().setLayout(groupLayout);
 		frame.getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{tabbedPane}));
+	}
+	public String getFrameName() {
+		return frame.getName();
+	}
+	public void setFrameName(String name) {
+		frame.setName(name);
 	}
 }
