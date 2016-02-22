@@ -1,0 +1,10 @@
+#!/bin/bash
+# Script for executing application
+#
+# To Execute: 
+#     bash goapp
+#
+
+echo Launching app...
+java -jar build/libs/team5-all.jar
+
