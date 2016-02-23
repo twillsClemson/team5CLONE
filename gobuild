@@ -6,7 +6,7 @@
 #
 
 
-gradlew clean build jacocoTestReport
+./gradlew clean build jacocoTestReport
 
 echo Build complete. Test reports are available in build/reports. Launching firefox...
 firefox build/reports/tests/index.html build/reports/jacoco/test/html/index.html &  
