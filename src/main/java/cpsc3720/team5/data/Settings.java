@@ -1,6 +1,9 @@
-package data;
+package cpsc3720.team5.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -12,7 +15,7 @@ public class Settings {
 	private static Settings set = null;
 	private ArrayList<UserProfiles> profiles = null;
 	private final int approvalLevels = 5;
-	private ArrayList<ArrayList<Album>> approved = null;
+	private Map<Album, Integer> approved = null;
 	private String url = null;
 	public static final String tempFilePath = "./temp/Settings.json";
 	public static final String defaultURL = "http://127.0.0.1:5001/upnp/control/content_directory";
@@ -21,14 +24,11 @@ public class Settings {
 	private Settings() {
 		profiles = new ArrayList<UserProfiles>();
 
-		approved = new ArrayList<ArrayList<Album>>();
-		for (int i = 0; i < approvalLevels; i++) {
-			approved.add(new ArrayList<Album>());
-		}
+		approved = new HashMap<Album, Integer>();
 		url = defaultURL;
 	}
 	
-	public ArrayList<ArrayList<Album>> getApproved()
+	public Map<Album, Integer> getApproved()
 	{
 		return approved;
 	}
@@ -57,10 +57,8 @@ public class Settings {
 		return set;
 	}
 
-	public void addApprovedAlbum(int approvalLevel, Album album) {
-		for (int i = Math.min(approvalLevel - 1, approvalLevels - 1); i >= 0 ; i--) {
-			approved.get(i).add(album);
-		}
+	public void addApprovedAlbum(Album album, int approvalLevel) {
+		approved.put(album, Math.max(approvalLevel, approvalLevels));
 	}
 
 	public void setServerURL(String ServerURL) {

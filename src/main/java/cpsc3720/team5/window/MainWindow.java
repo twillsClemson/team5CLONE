@@ -1,4 +1,4 @@
-package data;
+package cpsc3720.team5.window;
 
 import javax.swing.JFrame;
 import javax.swing.*;

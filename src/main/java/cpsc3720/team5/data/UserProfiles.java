@@ -1,4 +1,4 @@
-package data;
+package cpsc3720.team5.data;
 
 
 public class UserProfiles {

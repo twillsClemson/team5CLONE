@@ -1,4 +1,4 @@
-package data;
+package cpsc3720.team5.window;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
