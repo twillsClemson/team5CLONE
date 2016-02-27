@@ -57,8 +57,25 @@ public class Settings {
 		return set;
 	}
 
+	public void addApprovedAlbum(Album album)
+	{
+		approved.put(album, Math.max(album.getApprovalLevel(), approvalLevels));
+	}
+	
 	public void addApprovedAlbum(Album album, int approvalLevel) {
 		approved.put(album, Math.max(approvalLevel, approvalLevels));
+	}
+	
+	public boolean isAlbumApproved(Album album, int approvalLevelNeeded)
+	{
+		if(album.getApprovalLevel() >= approvalLevelNeeded)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	public void setServerURL(String ServerURL) {
@@ -99,6 +116,11 @@ public class Settings {
 		
 		return set;
 
+	}
+	
+	public String getURL()
+	{
+		return url;
 	}
 
 	@Override

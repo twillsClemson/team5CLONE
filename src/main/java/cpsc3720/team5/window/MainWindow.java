@@ -1,10 +1,11 @@
 package cpsc3720.team5.window;
 
-import javax.swing.JFrame;
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -17,10 +18,24 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeModelListener;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import cpsc3720.team5.calculate.*;
+import cpsc3720.team5.data.Settings;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.util.HashMap;
+import java.util.Map;
+
 public class MainWindow {
+	
+	private String trackURL = "";
 
 	JFrame frame = new JFrame("Media Player Login");
 	JPanel panelControl = new JPanel();
@@ -34,6 +49,9 @@ public class MainWindow {
 	private JTable albumTable;
 	private static SettingsWindow settingsWindow = null;
 	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+	
+	JTabbedPane tabbedPane;
+	private Map<DefaultMutableTreeNode, String> songURLs;
 
 	/**
 	 * Launch the application.
@@ -189,12 +207,14 @@ public class MainWindow {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
+		
+		songURLs = new HashMap<DefaultMutableTreeNode, String>();
 
 		panelControl.add(mediaPlayerPanel, "2");
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.addTab("Favorites", createTemplate("Favorites"));
-		tabbedPane.addTab("Library", createTemplate("Library"));
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.addTab("Favorites", createFavoritesTemplate("Favorites"));
+		tabbedPane.addTab("Library", createLibraryTemplate("Library"));
 		
 		JButton logoutButton = new JButton("Logout");
 		logoutButton.addActionListener(new ActionListener() {
@@ -210,7 +230,7 @@ public class MainWindow {
 				if(settingsWindow == null)
 				{
 					settingsWindow = new SettingsWindow();
-					settingsWindow.main(null);
+					settingsWindow.main(null);					
 				}
 				else
 				{
@@ -471,8 +491,8 @@ public class MainWindow {
 		}
 	}
 	
-	// Create JPanels that are used in each tab
-	private JPanel createTemplate(String tabName)
+	// Create JPanels that are used in Favorites tab
+	private JPanel createFavoritesTemplate(String tabName)
 	{
 		JPanel template = new JPanel();
 		template.setName(tabName);
@@ -481,19 +501,22 @@ public class MainWindow {
 		JTree tree = new JTree();
 		
 		tree.setBackground(null);
-		tree.setModel(new DefaultTreeModel(
-			new DefaultMutableTreeNode(tabName) {
+		tree.setModel(new DefaultTreeModel( 
+				new DefaultMutableTreeNode(tabName)
 				{
-					DefaultMutableTreeNode node_1;
-					node_1 = new DefaultMutableTreeNode("Bach");
-					add(node_1);
-					node_1 = new DefaultMutableTreeNode("Beethoven");
-					add(node_1);
-					node_1 = new DefaultMutableTreeNode("Motzart");
-					add(node_1);
+					{
+						DefaultMutableTreeNode node_1;
+						
+						node_1 = new DefaultMutableTreeNode("Placeholder 1");
+						add(node_1);
+						node_1 = new DefaultMutableTreeNode("Placeholder 2");
+						add(node_1);
+						node_1 = new DefaultMutableTreeNode("Placeholder 3");
+						add(node_1);
+					}
 				}
-			}
 		));
+
 		tree.setName(tabName + "Tree");
 		GroupLayout gl_template = new GroupLayout(template);
 		gl_template.setHorizontalGroup(
@@ -513,4 +536,94 @@ public class MainWindow {
 		template.setLayout(gl_template);
 		return template;
 	}
+	
+	// Create JPanels that are used in Library tab
+	private JPanel createLibraryTemplate(String tabName)
+	{
+		JPanel template = new JPanel();
+		template.setName(tabName);
+		
+		UIManager.put("Tree.rendererFillBackground", false);
+		final JTree tree = new JTree();
+		
+		tree.setBackground(null);
+		tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode(tabName, Settings.getInstance().getURL(), songURLs)));
+		
+		tree.addTreeSelectionListener(new TreeSelectionListener()
+		{
+			public void valueChanged(TreeSelectionEvent e)
+			{
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+				if (node == null)
+				{
+					trackURL = null;
+				}
+				else
+				{
+//					Object nodeInfo = node.getUserObject();
+					if(node.isLeaf())
+					{
+						System.out.println("LEAF " + node + " | " + songURLs.get(node));
+					}
+					else
+					{
+						System.out.println("NOT LEAF " + node);
+					}
+				}
+			}
+		});
+		
+		
+
+		tree.setName(tabName + "Tree");
+		GroupLayout gl_template = new GroupLayout(template);
+		gl_template.setHorizontalGroup(
+			gl_template.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_template.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		gl_template.setVerticalGroup(
+			gl_template.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_template.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
+					.addContainerGap())
+		);
+		template.setLayout(gl_template);
+		return template;
+	}
+	
+	// Create JPanels that are used in each tab
+//	private JPanel createTemplate(String tabName)
+//	{
+//		JPanel template = new JPanel();
+//		template.setName(tabName);
+//		
+//		UIManager.put("Tree.rendererFillBackground", false);
+//		JTree tree = new JTree();
+//		
+//		tree.setBackground(null);
+//		tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode(tabName, Settings.getInstance().getURL())));
+//
+//		tree.setName(tabName + "Tree");
+//		GroupLayout gl_template = new GroupLayout(template);
+//		gl_template.setHorizontalGroup(
+//			gl_template.createParallelGroup(Alignment.LEADING)
+//				.addGroup(gl_template.createSequentialGroup()
+//					.addContainerGap()
+//					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+//					.addContainerGap())
+//		);
+//		gl_template.setVerticalGroup(
+//			gl_template.createParallelGroup(Alignment.LEADING)
+//				.addGroup(gl_template.createSequentialGroup()
+//					.addContainerGap()
+//					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
+//					.addContainerGap())
+//		);
+//		template.setLayout(gl_template);
+//		return template;
+//	}
 }
