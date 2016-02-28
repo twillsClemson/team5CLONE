@@ -24,14 +24,20 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
 
 import cpsc3720.team5.calculate.*;
+import cpsc3720.team5.data.Album;
 import cpsc3720.team5.data.Settings;
+import cpsc3720.team5.data.Song;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class MainWindow {
 	
@@ -51,7 +57,10 @@ public class MainWindow {
 	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 	
 	JTabbedPane tabbedPane;
-	private Map<DefaultMutableTreeNode, String> songURLs;
+//	private Map<DefaultMutableTreeNode, String> songURLs;
+//	private Map<DefaultMutableTreeNode, ArrayList<DefaultMutableTreeNode>> albumContents;
+	
+	private Map<String, Album> libraryAlbums = new HashMap<String, Album>();
 
 	/**
 	 * Launch the application.
@@ -207,8 +216,6 @@ public class MainWindow {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		
-		songURLs = new HashMap<DefaultMutableTreeNode, String>();
 
 		panelControl.add(mediaPlayerPanel, "2");
 		
@@ -319,7 +326,7 @@ public class MainWindow {
 					.addContainerGap())
 		);
 		
-		JTable albumTable = new JTable() {
+		albumTable = new JTable() {
 	        private static final long serialVersionUID = 1L;
 
 	        public boolean isCellEditable(int row, int column) {                
@@ -334,17 +341,13 @@ public class MainWindow {
 		header.setForeground(Color.white);
 		albumTable.setModel(new DefaultTableModel(
 			new Object[][] {
-				{new Integer(1), "Symphony #9 in D minor", "24:25"},
-				{new Integer(2), "Moonlight Sonata", "14:59"},
-				{new Integer(3), "Pathetique", "20:18"},
-				{new Integer(4), "Emperor Concerto", "7:45"},
-				{null, null, null},
-				{null, null, null},
+				{null, null, null}
 			},
 			new String[] {
 				"#", "Track Name", "Song Duration"
 			}
 		));
+		
 		TableColumn trackNumber = albumTable.getColumnModel().getColumn(0);
 		trackNumber.setPreferredWidth(50);
 		trackNumber.setCellRenderer(centerRenderer);
@@ -547,29 +550,88 @@ public class MainWindow {
 		final JTree tree = new JTree();
 		
 		tree.setBackground(null);
-		tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode(tabName, Settings.getInstance().getURL(), songURLs)));
+		tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode(tabName, Settings.getInstance().getURL(), libraryAlbums)));
 		
 		tree.addTreeSelectionListener(new TreeSelectionListener()
 		{
 			public void valueChanged(TreeSelectionEvent e)
 			{
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-				if (node == null)
+				resetAlbumTable();
+				
+//				for(Iterator<Entry<String, Album> > i = libraryAlbums.entrySet().iterator(); i.hasNext();)
+//				{
+//					Entry<String, Album> next = (Entry<String, Album>) i.next();
+//					
+//					System.out.println(next.getKey());
+//					for(Iterator<Song> j = next.getValue().getSongs().iterator(); j.hasNext();)
+//					{
+//						Song nextJ = j.next();
+//						System.out.println("  " + nextJ.getName() + " | " + nextJ.getLength() + " | " + nextJ.getURL());
+//					}
+//					System.out.println("]");
+//				}
+				
+				Album album = libraryAlbums.get( ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString() );
+				if(album != null)
 				{
-					trackURL = null;
-				}
-				else
-				{
-//					Object nodeInfo = node.getUserObject();
-					if(node.isLeaf())
+					int counter = 1;
+					
+					for(Iterator<Song> j = album.getSongs().iterator(); j.hasNext();)
 					{
-						System.out.println("LEAF " + node + " | " + songURLs.get(node));
+						Song song = j.next();
+						addToAlbumTable(new Object[]{ new Integer(counter++), song.getName(), song.getLength() } );
+//						System.out.println("  " + nextJ.getName() + " | " + nextJ.getLength() + " | " + nextJ.getURL());
 					}
-					else
-					{
-						System.out.println("NOT LEAF " + node);
-					}
+					
 				}
+
+
+				
+//				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+//				if (node == null)
+//				{
+//					trackURL = null;
+//				}
+//				else
+//				{
+//					Album album = libraryAlbums.get(node.toString());
+//					if(album != null)
+//					{
+//						
+//					}
+////					Object nodeInfo = node.getUserObject();
+//					if(node.isLeaf())
+//					{
+//						System.out.println("LEAF " + node + " | " + songURLs.get(node));
+//						
+//
+//					}
+//					else
+//					{
+//						System.out.println("NOT LEAF " + node);
+//						
+//						if(node.getChildAt(0).isLeaf())
+//						{
+//							for(int i = 0; i < node.getChildCount(); i++)
+//							{
+//								Object[] data = new Object[3];
+//								DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(i);
+//								
+//								data[0] = new Integer(i+1);
+//								data[1] = childNode.toString();
+//								data[2] = songURLs.get(childNode);
+//								
+//								if(data[2] == null || data[2].equals(""))
+//								{
+//									resetAlbumTable();
+//									break;
+//								}
+//								
+//								addToAlbumTable(data);
+//							}
+//						}
+//					}
+//				}
 			}
 		});
 		
@@ -593,6 +655,21 @@ public class MainWindow {
 		);
 		template.setLayout(gl_template);
 		return template;
+	}
+	
+	public void addToAlbumTable(Object[] obj)
+	{
+		((DefaultTableModel) albumTable.getModel()).addRow(obj);
+	}
+	
+	public void resetAlbumTable()
+	{
+		DefaultTableModel model = ((DefaultTableModel) albumTable.getModel());
+		
+		while(model.getRowCount() > 0)
+		{
+			model.removeRow(0);
+		}
 	}
 	
 	// Create JPanels that are used in each tab

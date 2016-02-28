@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import cpsc3720.team5.calculate.*;
+import cpsc3720.team5.data.Album;
+import cpsc3720.team5.data.Song;
 
 public class CalculateTreeNode
 {
@@ -21,9 +23,9 @@ public class CalculateTreeNode
 			+ "			<RequestedCount>999</RequestedCount>" + "			<SortCriteria></SortCriteria>"
 			+ "		</u:Browse>" + "	</s:Body>" + "</s:Envelope>";
 	
-	static public DefaultMutableTreeNode calculateTreeNode(String name, String serverURL, Map<DefaultMutableTreeNode, String> URLs)
+	static public DefaultMutableTreeNode calculateTreeNode(String name, String serverURL, Map<String, Album> albums)
 	{
-		DefaultMutableTreeNode node = calculateTreeNodeRecursive(name, "0", serverURL, URLs);
+		DefaultMutableTreeNode node = calculateTreeNodeRecursive(name, "0", serverURL, albums);
 		return node;
 //		return new DefaultMutableTreeNode(name)
 //		{
@@ -40,7 +42,7 @@ public class CalculateTreeNode
 //		};
 	}
 	
-	static private DefaultMutableTreeNode calculateTreeNodeRecursive(String name, final String objectID, final String serverURL, final Map<DefaultMutableTreeNode, String> URLs)
+	static private DefaultMutableTreeNode calculateTreeNodeRecursive(final String name, final String objectID, final String serverURL, final Map<String, Album> albums)
 	{
 		try
 		{
@@ -50,7 +52,6 @@ public class CalculateTreeNode
 				 * 
 				 */
 				private static final long serialVersionUID = 1L;
-
 				{
 					String soapMsg = soapString.replace("{OBJECT_ID}", objectID);
 
@@ -59,22 +60,63 @@ public class CalculateTreeNode
 					for (Iterator<Object> i = items.iterator(); i.hasNext();)
 					{
 						String[] next = (String[]) i.next();
-						System.out.println(next[0] + " | " + next[1] + " | " + next[2]);
-						DefaultMutableTreeNode node = calculateTreeNodeRecursive(next[0], next[1], serverURL, URLs);
+						System.out.println("[[" +next[0] + " | " + next[1] + " | " + next[2] + " | " + next[3]);
+						DefaultMutableTreeNode node = calculateTreeNodeRecursive(next[0], next[1], serverURL, albums);
+						
 						add(node);
 						
+						// Handle nodes that are not songs
 						if(next[2].length() != 0)
 						{
-							URLs.put(node, next[2]);
+							Album album = albums.get(/*next[0]*/ name);
+							if(album == null)
+							{
+								album = new Album(/*next[0]*/ name);
+								albums.put(/*next[0]*/ name, album);
+							}
+							
+							Song song = new Song();
+							song.setName(next[0]);
+							song.setURL(next[2]);
+							song.setLength(next[3]);
+							
+							album.addSong(song);
+//							// If folder is an album
+//							if(node.getChildCount() != 0 && node.getChildAt(0).getChildCount() == 0)
+//							{
+//								Album album = albums.get(next[0]);
+//								if(album == null)
+//								{
+//									album = new Album(next[0]);
+//									album.setName(next[0]);
+//									albums.put(next[0], album);
+//								}
+//								
+//								
+//	
+//							}
+//							add(node);
+////							Object[] objInfo = new Object[3];
+////							objInfo[0] = node;
+////							objInfo[1] = next[0];
+////							objInfo[2] = next[1];
+////						objInfo[3] = 
+//						URLs.put(node, next[2]);
+						}
+						
+						else
+						{
+						
 						}
 					}
 				};
 			};
-		} catch (final IOException e)
+		} catch (IOException e)
 		{
-			System.err.println(e);
-			return new DefaultMutableTreeNode(name);
-		}	
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;	
 	}
 
 

@@ -2,7 +2,9 @@ package cpsc3720.team5.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gson.Gson;
 
@@ -76,6 +78,31 @@ public class Settings {
 		{
 			return false;
 		}
+	}
+	
+	public boolean isAlbumApproved(String albumName, int approvalLevelNeeded)
+	{
+		Iterator it = approved.entrySet().iterator();
+		Album target;
+		while(it.hasNext())
+		{
+			Map.Entry<Album, Integer> pair = (Map.Entry<Album, Integer>)it.next();
+			target = pair.getKey();
+			if(target.getName().equals(albumName))
+			{
+				if(target.getApprovalLevel() >= approvalLevelNeeded)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			it.remove();
+		}
+		
+		return false;
 	}
 
 	public void setServerURL(String ServerURL) {

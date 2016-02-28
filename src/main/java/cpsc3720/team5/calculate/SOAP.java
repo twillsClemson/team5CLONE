@@ -53,14 +53,16 @@ public class SOAP {
 		if(resultStr.length() == 0)
 			return ret;
 		
-			System.out.println("Sample Soap response \n" + resultStr);
+//			System.out.println("Sample Soap response \n" + resultStr);
 			final String START_TAG = "<Result>";
 			final String END_TAG = "</Result>";
+			String duration = "";
 			int startIndex = resultStr.indexOf(START_TAG) + START_TAG.length();
 			int endIndex = resultStr.indexOf(END_TAG);
 			String finalStr = resultStr.substring(startIndex, endIndex);
 			
 			finalStr = finalStr.replace("&lt;", "<").replace("&gt;",">");
+			System.out.println("FinalStr \n" + finalStr);
 			
 //			System.out.println(finalStr);		
 			//System.out.println(finalStr.replace(">", ">\n"));		
@@ -98,6 +100,8 @@ public class SOAP {
 					title = sub.substring(startIndex, endIndex);
 					System.out.println("C: Title     = " + title);
 					
+					
+					
 	//				startIndex = sub.lastIndexOf("\">",  sub.indexOf("</res>")) + "\">".length();
 	//				endIndex = sub.indexOf("</res>");
 	//				System.out.println("C: ClipURL   = " + sub.substring(startIndex, endIndex));
@@ -115,8 +119,9 @@ public class SOAP {
 				}
 				
 				clipURL = "";
+				duration = "";
 				
-				ret.add( new String[] { title, ID, clipURL } );
+				ret.add( new String[] { title, ID, clipURL, duration } );
 				
 				index = finalStr.indexOf("<container", index+1);
 			}
@@ -164,6 +169,21 @@ public class SOAP {
 					clipURL = sub.substring(startIndex, endIndex);
 					System.out.println("ClipURL   = " + clipURL);
 					
+					System.out.println("SUB = " + sub);
+					
+					
+					startIndex = sub.indexOf("duration=\"") + "duration=\"".length();
+					endIndex = sub.indexOf("\"", startIndex);
+					
+					if(startIndex == -1 + "duration=\"".length() || endIndex == -1)
+					{
+						throw new StringIndexOutOfBoundsException();
+					}
+					
+					duration = sub.substring(startIndex, endIndex);
+					System.out.println("DURATION = " + duration);
+					
+					
 	
 	//				System.out.println("Title     = " + sub.substring(sub.indexOf("<dc:title>") + "<dc:title>".length(), sub.indexOf("</dc:title>")));
 	//				System.out.println("ClipURL   = " + sub.substring(sub.lastIndexOf("\">", sub.indexOf("</res>")) + "\">".length(), sub.indexOf("</res>")));
@@ -173,7 +193,7 @@ public class SOAP {
 					continue;
 				}
 				
-				ret.add( new String[] { title, ID, clipURL } );
+				ret.add( new String[] { title, ID, clipURL, duration } );
 				
 				index = finalStr.indexOf("<item", index+1);
 			}
@@ -209,7 +229,7 @@ public class SOAP {
 				// ERROR
 				ArrayList<Object> ret = new ArrayList<Object>();
 				
-				ret.add( new String[] { "ERROR", "0", "http://" }) ;
+				ret.add( new String[] { "ERROR", "0", "http://", "" }) ;
 				return new ArrayList<Object>();
 			}
 			else
