@@ -85,21 +85,36 @@ public class Settings {
 	
 	public boolean isAlbumApproved(String albumName, int currentApprovalLevel)
 	{
+		Album target = getAlbum(albumName);
+		
+		if(target != null)
+		{
+			return isAlbumApproved(target, currentApprovalLevel);
+		}
+		else
+		{
+			System.out.println("Album not found - false [" + albumName + "]");
+			return false;
+		}
+	}
+	
+	public Album getAlbum(String albumName)
+	{
 		Iterator<Entry<Album, Integer> > it = approved.entrySet().iterator();
 		Album target;
 		while(it.hasNext())
 		{
 			Map.Entry<Album, Integer> pair = (Map.Entry<Album, Integer>)it.next();
 			target = pair.getKey();
-			System.out.println("{{" + albumName + " | " + target.getName());
+//			System.out.println("{{" + albumName + " | " + target.getName());
 			if(target.getName().equals(albumName))
 			{
-				return isAlbumApproved(target, currentApprovalLevel);
+				return target;
+//				return isAlbumApproved(target, currentApprovalLevel);
 			}
 		}
 		
-		System.out.println("Album not found - false [" + albumName + "]");
-		return false;
+		return null;
 	}
 
 	public void setServerURL(String ServerURL) {

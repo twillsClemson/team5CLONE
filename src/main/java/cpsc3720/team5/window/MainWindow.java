@@ -34,6 +34,7 @@ import cpsc3720.team5.data.UserProfiles;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -382,6 +383,35 @@ public class MainWindow {
 		lblAlbumArtist.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
 		btnFavoriteAlbum = new JButton("Favorite Album");
+		
+		btnFavoriteAlbum.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0)
+			{
+				ArrayList<Song> songs;
+				
+				try
+				{
+					 songs = libraryAlbums.get(selectedAlbum.getName()).getSongs();
+					 
+					 for(Iterator<Song> i = songs.iterator(); i.hasNext();)
+					 {
+						 Song next = (Song) i.next();						 
+						 Download.downloadTrack(next.getURL());
+					 }
+					 
+				} catch (NullPointerException ex)
+				{
+					ex.printStackTrace();
+					return;
+				} catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+		});
 		btnFavoriteAlbum.setEnabled(false);
 
 		btnRestrict = new JButton("Restrict Album");

@@ -19,6 +19,12 @@ public class Song
 		length = _length;
 		URL = _URL;
 	}
+	
+	public String getFileName()
+	{
+		int index = URL.lastIndexOf("/") + 1;
+		return URL.substring(index);
+	}
 
 	public String getName()
 	{

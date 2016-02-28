@@ -83,11 +83,11 @@ public class CalculateTreeNode
 						// Handle nodes that are not songs
 						if(next[2].length() != 0)
 						{
-							Album album = albums.get(/*next[0]*/ name);
+							Album album = albums.get( name);
 							if(album == null)
 							{
-								album = new Album(/*next[0]*/ name);
-								albums.put(/*next[0]*/ name, album);
+								album = new Album(name);
+								albums.put(name, album);
 							}
 							
 							Song song = new Song();
