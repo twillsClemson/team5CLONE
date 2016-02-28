@@ -227,9 +227,9 @@ public class SOAP {
 			if(resultStr == null)
 			{
 				// ERROR
-				ArrayList<Object> ret = new ArrayList<Object>();
-				
-				ret.add( new String[] { "ERROR", "0", "http://", "" }) ;
+//				ArrayList<Object> ret = new ArrayList<Object>();
+//				ret.add( new String[] { "ERROR", "0", "http://", "" }) ;
+
 				return new ArrayList<Object>();
 			}
 			else

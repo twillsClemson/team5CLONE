@@ -30,6 +30,7 @@ import cpsc3720.team5.calculate.*;
 import cpsc3720.team5.data.Album;
 import cpsc3720.team5.data.Settings;
 import cpsc3720.team5.data.Song;
+import cpsc3720.team5.data.UserProfiles;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
@@ -41,7 +42,8 @@ import java.util.Map.Entry;
 
 public class MainWindow {
 	
-	private String trackURL = "";
+	private Album selectedAlbum = null;
+	private UserProfiles currentUser = null;
 
 	JFrame frame = new JFrame("Media Player Login");
 	JPanel panelControl = new JPanel();
@@ -59,6 +61,12 @@ public class MainWindow {
 	JTabbedPane tabbedPane;
 //	private Map<DefaultMutableTreeNode, String> songURLs;
 //	private Map<DefaultMutableTreeNode, ArrayList<DefaultMutableTreeNode>> albumContents;
+	
+	JButton favoriteAlbumButton = new JButton("Favorite Album");
+	private JButton btnFavoriteAlbum;
+	
+	JButton restrictButton = new JButton("Restrict Album");
+	private JButton btnRestrict;
 	
 	private Map<String, Album> libraryAlbums = new HashMap<String, Album>();
 
@@ -221,7 +229,7 @@ public class MainWindow {
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.addTab("Favorites", createFavoritesTemplate("Favorites"));
-		tabbedPane.addTab("Library", createLibraryTemplate("Library"));
+//		tabbedPane.addTab("Library", createLibraryTemplate("Library"));
 		
 		JButton logoutButton = new JButton("Logout");
 		logoutButton.addActionListener(new ActionListener() {
@@ -229,6 +237,9 @@ public class MainWindow {
 				passwordField.setText("");
 				frame.setTitle("Media Player Login");
 				cl.show(panelControl, "1");
+				
+				// Remove the library tab (to be recreated when a new user logs in)
+				tabbedPane.remove(1);
 			}
 		});
 		JButton settingsButton = new JButton("Settings");
@@ -370,9 +381,12 @@ public class MainWindow {
 		lblAlbumArtist.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAlbumArtist.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
-		JButton favoriteAlbumButton = new JButton("Favorite Album");
+		btnFavoriteAlbum = new JButton("Favorite Album");
+		btnFavoriteAlbum.setEnabled(false);
+
+		btnRestrict = new JButton("Restrict Album");
+		btnRestrict.setEnabled(false);
 		
-		JButton restrictButton = new JButton("Restrict Album");
 		GroupLayout gl_albumInfoPanel = new GroupLayout(albumInfoPanel);
 		gl_albumInfoPanel.setHorizontalGroup(
 			gl_albumInfoPanel.createParallelGroup(Alignment.TRAILING)
@@ -382,11 +396,11 @@ public class MainWindow {
 						.addGroup(Alignment.TRAILING, gl_albumInfoPanel.createSequentialGroup()
 							.addComponent(lblAlbumArtist, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
-							.addComponent(favoriteAlbumButton, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE))
+							.addComponent(btnFavoriteAlbum, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE))
 						.addGroup(Alignment.TRAILING, gl_albumInfoPanel.createSequentialGroup()
 							.addComponent(lblAlbumTitle, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
-							.addComponent(restrictButton, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(btnRestrict, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
 		gl_albumInfoPanel.setVerticalGroup(
@@ -399,9 +413,9 @@ public class MainWindow {
 					.addContainerGap(16, Short.MAX_VALUE))
 				.addGroup(gl_albumInfoPanel.createSequentialGroup()
 					.addContainerGap(19, Short.MAX_VALUE)
-					.addComponent(restrictButton)
+					.addComponent(btnRestrict)
 					.addGap(18)
-					.addComponent(favoriteAlbumButton)
+					.addComponent(btnFavoriteAlbum)
 					.addContainerGap())
 		);
 		albumInfoPanel.setLayout(gl_albumInfoPanel);
@@ -485,6 +499,23 @@ public class MainWindow {
 		{
 			passwordField.setText("");
 			frame.setTitle("Media Player");
+			
+			// Load settings for individual user should go here (setting the currentUser variable in the process)
+			// But for now, default some things (Please delete/rewrite between these slashes when you have something functional
+			/////////////////////
+			currentUser = new UserProfiles();
+			currentUser.setName("John Smith");
+			currentUser.setRestrictionLevel(2);
+			
+			Settings.getInstance().addApprovedAlbum(new Album("Album A"), 1);
+			Settings.getInstance().addApprovedAlbum(new Album("Album B"), 3);
+			Settings.getInstance().addApprovedAlbum(new Album("Album C"), 3);
+			/////////////////////
+			
+			
+			tabbedPane.addTab("Library", createLibraryTemplate("Library"));
+			
+			
 			cl.show(panelControl, "2");
 		}
 		else
@@ -550,7 +581,7 @@ public class MainWindow {
 		final JTree tree = new JTree();
 		
 		tree.setBackground(null);
-		tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode(tabName, Settings.getInstance().getURL(), libraryAlbums)));
+		tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode(tabName, Settings.getInstance().getURL(), libraryAlbums, currentUser.getRestrictionLevel())));
 		
 		tree.addTreeSelectionListener(new TreeSelectionListener()
 		{
@@ -574,15 +605,24 @@ public class MainWindow {
 				Album album = libraryAlbums.get( ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString() );
 				if(album != null)
 				{
-					int counter = 1;
+					selectedAlbum = album;
+					btnFavoriteAlbum.setEnabled(true);
+					btnRestrict.setEnabled(true);
 					
+					int counter = 1;
 					for(Iterator<Song> j = album.getSongs().iterator(); j.hasNext();)
 					{
 						Song song = j.next();
-						addToAlbumTable(new Object[]{ new Integer(counter++), song.getName(), song.getLength() } );
+						Object[] row = new Object[]{ new Integer(counter++), song.getName(), song.getLength() };
+						addToAlbumTable(row);
 //						System.out.println("  " + nextJ.getName() + " | " + nextJ.getLength() + " | " + nextJ.getURL());
 					}
 					
+				}
+				else
+				{
+					btnFavoriteAlbum.setEnabled(false);
+					btnRestrict.setEnabled(false);
 				}
 
 

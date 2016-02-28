@@ -9,7 +9,7 @@ public class Album {
 
 	public Album() {
 		name = "";
-		approvalLevel = 1;
+		approvalLevel = 1; // Default to lowest restriction level
 		songs = new ArrayList<Song>();
 	}
 	

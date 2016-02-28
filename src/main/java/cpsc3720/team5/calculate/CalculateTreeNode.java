@@ -9,12 +9,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import cpsc3720.team5.calculate.*;
 import cpsc3720.team5.data.Album;
+import cpsc3720.team5.data.Settings;
 import cpsc3720.team5.data.Song;
 
 public class CalculateTreeNode
 {
 	
-	static String soapString = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>"
+	static public final String soapString = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>"
 			+ "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\""
 			+ "	xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">" + "	<s:Body>"
 			+ "		<u:Browse xmlns:u=\"urn:schemas-upnp-org:service:ContentDirectory:1\">"
@@ -23,9 +24,16 @@ public class CalculateTreeNode
 			+ "			<RequestedCount>999</RequestedCount>" + "			<SortCriteria></SortCriteria>"
 			+ "		</u:Browse>" + "	</s:Body>" + "</s:Envelope>";
 	
-	static public DefaultMutableTreeNode calculateTreeNode(String name, String serverURL, Map<String, Album> albums)
+	static public String serverURL;
+	static public int currentApprovalLevel;
+	static public Map<String, Album> albums;
+	
+	static public DefaultMutableTreeNode calculateTreeNode(String name, String newServerURL, Map<String, Album> newAlbums, int newCurrentApprovalLevel)
 	{
-		DefaultMutableTreeNode node = calculateTreeNodeRecursive(name, "0", serverURL, albums);
+		serverURL = newServerURL;
+		currentApprovalLevel = newCurrentApprovalLevel;
+		albums = newAlbums;
+		DefaultMutableTreeNode node = calculateTreeNodeRecursive(name, "0");
 		return node;
 //		return new DefaultMutableTreeNode(name)
 //		{
@@ -42,7 +50,7 @@ public class CalculateTreeNode
 //		};
 	}
 	
-	static private DefaultMutableTreeNode calculateTreeNodeRecursive(final String name, final String objectID, final String serverURL, final Map<String, Album> albums)
+	static private DefaultMutableTreeNode calculateTreeNodeRecursive(final String name, final String objectID)
 	{
 		try
 		{
@@ -61,7 +69,14 @@ public class CalculateTreeNode
 					{
 						String[] next = (String[]) i.next();
 						System.out.println("[[" +next[0] + " | " + next[1] + " | " + next[2] + " | " + next[3]);
-						DefaultMutableTreeNode node = calculateTreeNodeRecursive(next[0], next[1], serverURL, albums);
+						
+						DefaultMutableTreeNode node = calculateTreeNodeRecursive(next[0], next[1]);
+						
+						if(albums.containsKey(next[0]) && !Settings.getInstance().isAlbumApproved(next[0], currentApprovalLevel))
+						{
+							// If the current album is not approved, do not add it to the tree
+							continue;
+						}
 						
 						add(node);
 						

@@ -59,49 +59,46 @@ public class Settings {
 		return set;
 	}
 
-	public void addApprovedAlbum(Album album)
-	{
-		approved.put(album, Math.max(album.getApprovalLevel(), approvalLevels));
-	}
+//	public void addApprovedAlbum(Album album)
+//	{
+//		approved.put(album, Math.max(album.getApprovalLevel(), approvalLevels));
+//	}
 	
 	public void addApprovedAlbum(Album album, int approvalLevel) {
+		album.setApprovalLevel(approvalLevel);
 		approved.put(album, Math.max(approvalLevel, approvalLevels));
 	}
 	
-	public boolean isAlbumApproved(Album album, int approvalLevelNeeded)
+	public boolean isAlbumApproved(Album album, int currentApprovalLevel)
 	{
-		if(album.getApprovalLevel() >= approvalLevelNeeded)
+		if(album.getApprovalLevel() > currentApprovalLevel)
 		{
-			return true;
+			System.out.println("Album approval > current level = FALSE " + album.getApprovalLevel() + " > " + currentApprovalLevel + " | " + album.getName());
+			return false;
 		}
 		else
 		{
-			return false;
+			System.out.println("Album approval < current level = TRUE " + album.getApprovalLevel() + " <= " + currentApprovalLevel + " | " + album.getName());
+			return true;
 		}
 	}
 	
-	public boolean isAlbumApproved(String albumName, int approvalLevelNeeded)
+	public boolean isAlbumApproved(String albumName, int currentApprovalLevel)
 	{
-		Iterator it = approved.entrySet().iterator();
+		Iterator<Entry<Album, Integer> > it = approved.entrySet().iterator();
 		Album target;
 		while(it.hasNext())
 		{
 			Map.Entry<Album, Integer> pair = (Map.Entry<Album, Integer>)it.next();
 			target = pair.getKey();
+			System.out.println("{{" + albumName + " | " + target.getName());
 			if(target.getName().equals(albumName))
 			{
-				if(target.getApprovalLevel() >= approvalLevelNeeded)
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
+				return isAlbumApproved(target, currentApprovalLevel);
 			}
-			it.remove();
 		}
 		
+		System.out.println("Album not found - false [" + albumName + "]");
 		return false;
 	}
 
