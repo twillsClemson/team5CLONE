@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JTree;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -387,29 +388,7 @@ public class MainWindow {
 		btnFavoriteAlbum.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0)
 			{
-				ArrayList<Song> songs;
-				
-				try
-				{
-					 songs = libraryAlbums.get(selectedAlbum.getName()).getSongs();
-					 
-					 for(Iterator<Song> i = songs.iterator(); i.hasNext();)
-					 {
-						 Song next = (Song) i.next();						 
-						 Download.downloadTrack(next.getURL());
-					 }
-					 
-				} catch (NullPointerException ex)
-				{
-					ex.printStackTrace();
-					return;
-				} catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				
+				onBtnFavoritesPress();
 			}
 		});
 		btnFavoriteAlbum.setEnabled(false);
@@ -535,7 +514,7 @@ public class MainWindow {
 			/////////////////////
 			currentUser = new UserProfiles();
 			currentUser.setName("John Smith");
-			currentUser.setRestrictionLevel(2);
+			currentUser.setRestrictionLevel(5);
 			
 			Settings.getInstance().addApprovedAlbum(new Album("Album A"), 1);
 			Settings.getInstance().addApprovedAlbum(new Album("Album B"), 3);
@@ -617,94 +596,9 @@ public class MainWindow {
 		{
 			public void valueChanged(TreeSelectionEvent e)
 			{
-				resetAlbumTable();
-				
-//				for(Iterator<Entry<String, Album> > i = libraryAlbums.entrySet().iterator(); i.hasNext();)
-//				{
-//					Entry<String, Album> next = (Entry<String, Album>) i.next();
-//					
-//					System.out.println(next.getKey());
-//					for(Iterator<Song> j = next.getValue().getSongs().iterator(); j.hasNext();)
-//					{
-//						Song nextJ = j.next();
-//						System.out.println("  " + nextJ.getName() + " | " + nextJ.getLength() + " | " + nextJ.getURL());
-//					}
-//					System.out.println("]");
-//				}
-				
-				Album album = libraryAlbums.get( ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString() );
-				if(album != null)
-				{
-					selectedAlbum = album;
-					btnFavoriteAlbum.setEnabled(true);
-					btnRestrict.setEnabled(true);
-					
-					int counter = 1;
-					for(Iterator<Song> j = album.getSongs().iterator(); j.hasNext();)
-					{
-						Song song = j.next();
-						Object[] row = new Object[]{ new Integer(counter++), song.getName(), song.getLength() };
-						addToAlbumTable(row);
-//						System.out.println("  " + nextJ.getName() + " | " + nextJ.getLength() + " | " + nextJ.getURL());
-					}
-					
-				}
-				else
-				{
-					btnFavoriteAlbum.setEnabled(false);
-					btnRestrict.setEnabled(false);
-				}
-
-
-				
-//				DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-//				if (node == null)
-//				{
-//					trackURL = null;
-//				}
-//				else
-//				{
-//					Album album = libraryAlbums.get(node.toString());
-//					if(album != null)
-//					{
-//						
-//					}
-////					Object nodeInfo = node.getUserObject();
-//					if(node.isLeaf())
-//					{
-//						System.out.println("LEAF " + node + " | " + songURLs.get(node));
-//						
-//
-//					}
-//					else
-//					{
-//						System.out.println("NOT LEAF " + node);
-//						
-//						if(node.getChildAt(0).isLeaf())
-//						{
-//							for(int i = 0; i < node.getChildCount(); i++)
-//							{
-//								Object[] data = new Object[3];
-//								DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(i);
-//								
-//								data[0] = new Integer(i+1);
-//								data[1] = childNode.toString();
-//								data[2] = songURLs.get(childNode);
-//								
-//								if(data[2] == null || data[2].equals(""))
-//								{
-//									resetAlbumTable();
-//									break;
-//								}
-//								
-//								addToAlbumTable(data);
-//							}
-//						}
-//					}
-//				}
+				onLibraryTreeChange(tree);
 			}
 		});
-		
 		
 
 		tree.setName(tabName + "Tree");
@@ -740,6 +634,144 @@ public class MainWindow {
 		{
 			model.removeRow(0);
 		}
+	}
+	
+	public void onBtnFavoritesPress()
+	{
+		btnFavoriteAlbum.setEnabled(false);
+		if(currentUser.hasFavorite(selectedAlbum))
+		{
+			return;
+		}
+		
+		currentUser.addFavorite(selectedAlbum);
+		
+		
+		ArrayList<Song> songs;
+		
+		try
+		{
+			 songs = libraryAlbums.get(selectedAlbum.getName()).getSongs();
+			 
+			 for(Iterator<Song> i = songs.iterator(); i.hasNext();)
+			 {
+				 Song next = (Song) i.next();						 
+				 Download.downloadTrack(next.getURL());
+			 }
+			 
+		} catch (NullPointerException ex)
+		{
+			ex.printStackTrace();
+			return;
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+		
+		System.out.println("Downloads complete.");
+		return;
+		
+	}
+	
+	private void onLibraryTreeChange(JTree tree)
+	{
+		resetAlbumTable();
+		
+//		for(Iterator<Entry<String, Album> > i = libraryAlbums.entrySet().iterator(); i.hasNext();)
+//		{
+//			Entry<String, Album> next = (Entry<String, Album>) i.next();
+//			
+//			System.out.println(next.getKey());
+//			for(Iterator<Song> j = next.getValue().getSongs().iterator(); j.hasNext();)
+//			{
+//				Song nextJ = j.next();
+//				System.out.println("  " + nextJ.getName() + " | " + nextJ.getLength() + " | " + nextJ.getURL());
+//			}
+//			System.out.println("]");
+//		}
+		
+		Album album = libraryAlbums.get( ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString() );
+		if(album != null)
+		{
+			selectedAlbum = album;
+			
+			if(!currentUser.hasFavorite(album))
+			{
+				btnFavoriteAlbum.setEnabled(true);
+			}
+			else
+			{
+				btnFavoriteAlbum.setEnabled(false);
+			}
+			
+			btnRestrict.setEnabled(true);
+			
+			int counter = 1;
+			for(Iterator<Song> j = album.getSongs().iterator(); j.hasNext();)
+			{
+				Song song = j.next();
+				Object[] row = new Object[]{ new Integer(counter++), song.getName(), song.getLength() };
+				addToAlbumTable(row);
+//				System.out.println("  " + nextJ.getName() + " | " + nextJ.getLength() + " | " + nextJ.getURL());
+			}
+			
+		}
+		else
+		{
+			btnFavoriteAlbum.setEnabled(false);
+			btnRestrict.setEnabled(false);
+		}
+
+
+		
+//		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+//		if (node == null)
+//		{
+//			trackURL = null;
+//		}
+//		else
+//		{
+//			Album album = libraryAlbums.get(node.toString());
+//			if(album != null)
+//			{
+//				
+//			}
+////			Object nodeInfo = node.getUserObject();
+//			if(node.isLeaf())
+//			{
+//				System.out.println("LEAF " + node + " | " + songURLs.get(node));
+//				
+//
+//			}
+//			else
+//			{
+//				System.out.println("NOT LEAF " + node);
+//				
+//				if(node.getChildAt(0).isLeaf())
+//				{
+//					for(int i = 0; i < node.getChildCount(); i++)
+//					{
+//						Object[] data = new Object[3];
+//						DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(i);
+//						
+//						data[0] = new Integer(i+1);
+//						data[1] = childNode.toString();
+//						data[2] = songURLs.get(childNode);
+//						
+//						if(data[2] == null || data[2].equals(""))
+//						{
+//							resetAlbumTable();
+//							break;
+//						}
+//						
+//						addToAlbumTable(data);
+//					}
+//				}
+//			}
+//		}
+		
 	}
 	
 	// Create JPanels that are used in each tab

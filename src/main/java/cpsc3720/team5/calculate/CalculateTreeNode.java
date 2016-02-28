@@ -28,6 +28,8 @@ public class CalculateTreeNode
 	static public int currentApprovalLevel;
 	static public Map<String, Album> albums;
 	
+	// Recursively generates the nodes to be used in the "Library" tab of the main window
+	// Filters any results that the current user does not have permissions for
 	static public DefaultMutableTreeNode calculateTreeNode(String name, String newServerURL, Map<String, Album> newAlbums, int newCurrentApprovalLevel)
 	{
 		serverURL = newServerURL;
@@ -35,30 +37,15 @@ public class CalculateTreeNode
 		albums = newAlbums;
 		DefaultMutableTreeNode node = calculateTreeNodeRecursive(name, "0");
 		return node;
-//		return new DefaultMutableTreeNode(name)
-//		{
-//			{
-//				DefaultMutableTreeNode node_1;
-//				
-//				node_1 = new DefaultMutableTreeNode("Bach");
-//				add(node_1);
-//				node_1 = new DefaultMutableTreeNode("Beethoven");
-//				add(node_1);
-//				node_1 = new DefaultMutableTreeNode("Motzart");
-//				add(node_1);
-//			}
-//		};
 	}
 	
+	// Recursive algorithm used by calling function, "calculateTreeNode()"
 	static private DefaultMutableTreeNode calculateTreeNodeRecursive(final String name, final String objectID)
 	{
 		try
 		{
 			return new DefaultMutableTreeNode(name)
 			{
-				/**
-				 * 
-				 */
 				private static final long serialVersionUID = 1L;
 				{
 					String soapMsg = soapString.replace("{OBJECT_ID}", objectID);
@@ -68,22 +55,28 @@ public class CalculateTreeNode
 					for (Iterator<Object> i = items.iterator(); i.hasNext();)
 					{
 						String[] next = (String[]) i.next();
-						System.out.println("[[" +next[0] + " | " + next[1] + " | " + next[2] + " | " + next[3]);
+						
+						//	next[0] = String containing title of item
+						//	next[1] = String containing server ID of item
+						//	next[2] = String containing server URL of item, if item is a song
+						//	next[3] = String containing duration of item, if item is a song
+//						System.out.println("[[" +next[0] + " | " + next[1] + " | " + next[2] + " | " + next[3]);
 						
 						DefaultMutableTreeNode node = calculateTreeNodeRecursive(next[0], next[1]);
 						
+						// If the current album is not approved, do not add it to the tree
 						if(albums.containsKey(next[0]) && !Settings.getInstance().isAlbumApproved(next[0], currentApprovalLevel))
 						{
-							// If the current album is not approved, do not add it to the tree
+						
 							continue;
 						}
 						
 						add(node);
 						
-						// Handle nodes that are not songs
+						// Handle nodes that are songs, designated by the item having a server URL
 						if(next[2].length() != 0)
 						{
-							Album album = albums.get( name);
+							Album album = albums.get(name);
 							if(album == null)
 							{
 								album = new Album(name);
@@ -96,32 +89,6 @@ public class CalculateTreeNode
 							song.setLength(next[3]);
 							
 							album.addSong(song);
-//							// If folder is an album
-//							if(node.getChildCount() != 0 && node.getChildAt(0).getChildCount() == 0)
-//							{
-//								Album album = albums.get(next[0]);
-//								if(album == null)
-//								{
-//									album = new Album(next[0]);
-//									album.setName(next[0]);
-//									albums.put(next[0], album);
-//								}
-//								
-//								
-//	
-//							}
-//							add(node);
-////							Object[] objInfo = new Object[3];
-////							objInfo[0] = node;
-////							objInfo[1] = next[0];
-////							objInfo[2] = next[1];
-////						objInfo[3] = 
-//						URLs.put(node, next[2]);
-						}
-						
-						else
-						{
-						
 						}
 					}
 				};

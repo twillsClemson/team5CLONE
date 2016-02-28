@@ -12,7 +12,7 @@ public class Download
 {
 	private static final String downloadsFolder = "./temp/";
 	
-	// Saves track to local machine for playing
+	// Saves track to local machine
 	public static void downloadTrack(String trackURL) throws IOException
 	{
 	
@@ -48,21 +48,18 @@ public class Download
 		}
 	}
 	
+	// Truncates any directory names from the file name provided
+	// EX: "C:/Users/Me/hello.mp3" would become "hello.mp3"
 	private static String getFileName(String name)
 	{
 		int index = name.lastIndexOf("/") + 1;
 		return name.substring(index);
 	}
 
-	// Use to see if track has already been downloaded
+	// Used to see if track has already been downloaded
 	private static boolean trackExists(String trackName) {
 		File folder = new File(downloadsFolder);
 		folder.mkdir();
 		return new File(downloadsFolder+trackName).exists();
 	}
-	
-//	public static String getTrackName()
-//	{
-//		
-//	}
 }

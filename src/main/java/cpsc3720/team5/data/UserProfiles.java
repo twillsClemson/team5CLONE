@@ -1,6 +1,7 @@
 package cpsc3720.team5.data;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class UserProfiles {
@@ -17,9 +18,37 @@ public class UserProfiles {
 		favorites = new ArrayList<Album>();
 	}
 	
+	@Deprecated
+	public boolean hasFavorite(String albumName)
+	{
+		for(Iterator<Album> i = favorites.iterator(); i.hasNext();)
+		{
+			if(((Album) i.next()).getName().equals(albumName))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasFavorite(Album album)
+	{
+		for(Iterator<Album> i = favorites.iterator(); i.hasNext();)
+		{
+			if(((Album) i.next()) == album)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public void addFavorite(Album album)
 	{
-		favorites.add(album);
+//		if(!hasFavorite(album.getName()))
+//		{	
+			favorites.add(album);
+//		}
 	}
 	
 	public void removeFavorite(Album album)
