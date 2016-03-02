@@ -4,26 +4,39 @@ public class Song
 {
 	String name;
 	String length;
+	String artist;
 	String URL;
 	
 	public Song()
 	{
 		name = "";
 		length = "";
+		artist = "";
 		URL = "";
 	}
 	
-	public Song(String _name, String _length, String _URL)
+	public Song(String _name, String _length, String _URL, String _artist)
 	{
 		name = _name;
 		length = _length;
 		URL = _URL;
+		artist = _artist;
 	}
 	
 	public String getFileName()
 	{
 		int index = URL.lastIndexOf("/") + 1;
 		return URL.substring(index);
+	}
+	
+	public String getArtist()
+	{
+		return artist;
+	}
+	
+	public void setArtist(String _artist)
+	{
+		artist = _artist;
 	}
 
 	public String getName()

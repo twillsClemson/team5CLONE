@@ -78,7 +78,6 @@ public class SOAP {
 //			System.out.println("Sample Soap response \n" + resultStr);
 		final String START_TAG = "<Result>";
 		final String END_TAG = "</Result>";
-		String duration = "";
 		int startIndex = resultStr.indexOf(START_TAG) + START_TAG.length();
 		int endIndex = resultStr.indexOf(END_TAG);
 		String finalStr = resultStr.substring(startIndex, endIndex);
@@ -87,12 +86,12 @@ public class SOAP {
 //		System.out.println("FinalStr \n" + finalStr);
 		
 //			System.out.println(finalStr);		
-		//System.out.println(finalStr.replace(">", ">\n"));		
+//		System.out.println(finalStr.replace(">", ">\n"));		
 		
 		// Overall index
 		int index = finalStr.indexOf("<container", 0);
 		
-		String ID, title, clipURL;
+		String ID, title, clipURL = "", artist = "", duration = "";
 		
 		// Handle folders on server
 		while(index != -1)
@@ -134,7 +133,7 @@ public class SOAP {
 			clipURL = "";
 			duration = "";
 			
-			ret.add( new String[] { title, ID, clipURL, duration } );
+			ret.add( new String[] { title, ID, clipURL, duration, artist } );
 			
 			index = finalStr.indexOf("<container", index+1);
 		}
@@ -172,6 +171,17 @@ public class SOAP {
 				title = sub.substring(startIndex, endIndex);
 //				System.out.println("Title     = " + title);
 				
+				startIndex = sub.indexOf("<upnp:artist>") + "<upnp:artist>".length();
+				endIndex = sub.indexOf("</upnp:artist>");
+				
+				if(startIndex == -1 + "<upnp:artist>".length() || endIndex == -1)
+				{
+					throw new StringIndexOutOfBoundsException();
+				}
+
+				artist = sub.substring(startIndex, endIndex);
+				System.out.println("Artist    = " + artist);
+				
 				startIndex = sub.lastIndexOf("\">",  sub.indexOf("</res>")) + "\">".length();
 				endIndex = sub.indexOf("</res>");
 				
@@ -203,7 +213,7 @@ public class SOAP {
 				continue;
 			}
 			
-			ret.add( new String[] { title, ID, clipURL, duration } );
+			ret.add( new String[] { title, ID, clipURL, duration, artist } );
 			
 			index = finalStr.indexOf("<item", index+1);
 		}

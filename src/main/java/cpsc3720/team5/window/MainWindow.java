@@ -514,7 +514,7 @@ public class MainWindow {
 			/////////////////////
 			currentUser = new UserProfiles();
 			currentUser.setName("John Smith");
-			currentUser.setRestrictionLevel(5);
+			currentUser.setRestrictionLevel(2);
 			
 			Settings.getInstance().addApprovedAlbum(new Album("Album A"), 1);
 			Settings.getInstance().addApprovedAlbum(new Album("Album B"), 3);
@@ -591,6 +591,18 @@ public class MainWindow {
 		
 		tree.setBackground(null);
 		tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode(tabName, Settings.getInstance().getURL(), libraryAlbums, currentUser.getRestrictionLevel())));
+		
+		// Debug print out all albums and contents
+//		for(Iterator<Entry<String, Album> > i = libraryAlbums.entrySet().iterator(); i.hasNext();)
+//		{
+//			Album next = (Album) ((Entry<String, Album>) i.next()).getValue();
+//			System.out.println(next.getName());
+//			for(Iterator<Song> j = next.getSongs().iterator(); j.hasNext();)
+//			{
+//				Song nextSong = (Song) j.next();
+//				System.out.println("-  " + nextSong.getName() + " | " + nextSong.getArtist() + " | " + nextSong.getLength() + " | " + nextSong.getURL());
+//			}
+//		}
 		
 		tree.addTreeSelectionListener(new TreeSelectionListener()
 		{

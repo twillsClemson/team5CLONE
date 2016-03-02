@@ -60,6 +60,7 @@ public class CalculateTreeNode
 						//	next[1] = String containing server ID of item
 						//	next[2] = String containing server URL of item, if item is a song
 						//	next[3] = String containing duration of item, if item is a song
+						//	next[4] = String containing artist of item, if item is a song
 //						System.out.println("[[" +next[0] + " | " + next[1] + " | " + next[2] + " | " + next[3]);
 						
 						DefaultMutableTreeNode node = calculateTreeNodeRecursive(next[0], next[1]);
@@ -87,6 +88,7 @@ public class CalculateTreeNode
 							song.setName(next[0]);
 							song.setURL(next[2]);
 							song.setLength(next[3]);
+							song.setArtist(next[4]);
 							
 							album.addSong(song);
 						}
