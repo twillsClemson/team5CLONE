@@ -230,7 +230,7 @@ public class MainWindow {
 		panelControl.add(pnlMediaPlayer, "2");
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.addTab("Favorites", createFavoritesTemplate("Favorites"));
+//		tabbedPane.addTab("Favorites", createFavoritesTemplate("Favorites"));
 //		tabbedPane.addTab("Library", createLibraryTemplate("Library"));
 		
 		JButton btnLogout = new JButton("Logout");
@@ -242,6 +242,7 @@ public class MainWindow {
 				
 				// Remove the library tab (to be recreated when a new user logs in)
 				tabbedPane.remove(1);
+				tabbedPane.remove(0);
 			}
 		});
 		JButton btnSettings = new JButton("Settings");
@@ -358,7 +359,7 @@ public class MainWindow {
 				{null, null, null, null}
 			},
 			new String[] {
-				"#", "Track Name", "Artist", "Song Duration"
+				"#", "Track Name", "Artist", "Duration"
 			}
 		));
 		
@@ -366,8 +367,11 @@ public class MainWindow {
 		trackNumber.setPreferredWidth(50);
 		trackNumber.setCellRenderer(centerRenderer);
 		TableColumn trackName = albumTable.getColumnModel().getColumn(1);
-		trackName.setPreferredWidth(525);
+		trackName.setPreferredWidth(400);
 		trackName.setCellRenderer(centerRenderer);
+		TableColumn tcArtist = albumTable.getColumnModel().getColumn(0);
+		tcArtist.setPreferredWidth(100);
+		tcArtist.setCellRenderer(centerRenderer);
 		TableColumn trackDuration = albumTable.getColumnModel().getColumn(2);
 		trackDuration.setPreferredWidth(125);
 		trackDuration.setCellRenderer(centerRenderer);
@@ -517,13 +521,27 @@ public class MainWindow {
 			currentUser.setName("John Smith");
 			currentUser.setRestrictionLevel(2);
 			
-			Settings.getInstance().addApprovedAlbum(new Album("Album A"), 1);
-			Settings.getInstance().addApprovedAlbum(new Album("Album B"), 3);
-			Settings.getInstance().addApprovedAlbum(new Album("Album C"), 3);
+			Album album = new Album("Album A");
+			Settings.getInstance().addApprovedAlbum(album, 1);
+			libraryAlbums.put(album.getName(), album);
+			album = new Album("Album B");
+			Settings.getInstance().addApprovedAlbum(album, 3);
+			libraryAlbums.put(album.getName(), album);
+			album = new Album("Album C");
+			Settings.getInstance().addApprovedAlbum(album, 3);
+			libraryAlbums.put(album.getName(), album);
+			
+//			Settings.getInstance().addApprovedAlbum(new Album("Album A"), 1);
+//			Settings.getInstance().addApprovedAlbum(new Album("Album B"), 3);
+//			Settings.getInstance().addApprovedAlbum(new Album("Album C"), 3);
+			
+			
+			currentUser.addFavorite(Settings.getInstance().getAlbum("Album A"));
 			/////////////////////
 			
-			
-			tabbedPane.addTab("Library", createLibraryTemplate("Library"));
+			Component compLibrary = createLibraryTemplate("Library");
+			tabbedPane.addTab("Favorites", createFavoritesTemplate("WERWERWER"));
+			tabbedPane.addTab("Library", compLibrary);
 			
 			
 			cl.show(panelControl, "2");
@@ -546,20 +564,21 @@ public class MainWindow {
 		
 		treeFavLib.setBackground(null);
 		treeFavLib.setModel(new DefaultTreeModel( 
-				new DefaultMutableTreeNode(tabName)
-				{
-					{
-						DefaultMutableTreeNode node_1;
-						
-						node_1 = new DefaultMutableTreeNode("Placeholder 1");
-						add(node_1);
-						node_1 = new DefaultMutableTreeNode("Placeholder 2");
-						add(node_1);
-						node_1 = new DefaultMutableTreeNode("Placeholder 3");
-						add(node_1);
-					}
-				}
-		));
+				CalculateTreeNode.calculateFavoritesTreeNode(currentUser.getFavorites())));
+//				new DefaultMutableTreeNode(tabName)
+//				{
+//					{
+//						DefaultMutableTreeNode node_1;
+//						
+//						node_1 = new DefaultMutableTreeNode("Placeholder 1");
+//						add(node_1);
+//						node_1 = new DefaultMutableTreeNode("Placeholder 2");
+//						add(node_1);
+//						node_1 = new DefaultMutableTreeNode("Placeholder 3");
+//						add(node_1);
+//					}
+//				}
+//		));
 
 		treeFavLib.setName(tabName + "Tree");
 		GroupLayout gl_pnlTreePanel = new GroupLayout(pnlTreePanel);

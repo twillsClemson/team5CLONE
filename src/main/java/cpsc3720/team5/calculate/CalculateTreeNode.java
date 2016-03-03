@@ -68,7 +68,6 @@ public class CalculateTreeNode
 						// If the current album is not approved, do not add it to the tree
 						if(albums.containsKey(next[0]) && !Settings.getInstance().isAlbumApproved(next[0], currentApprovalLevel))
 						{
-						
 							continue;
 						}
 						
@@ -101,6 +100,79 @@ public class CalculateTreeNode
 			e.printStackTrace();
 		}
 		return null;	
+	}
+	
+	// Recursive algorithm used by calling function, "calculateTreeNode()"
+	static public DefaultMutableTreeNode calculateFavoritesTreeNode(/*Map<Album, Integer> albums,*/ ArrayList<Album> userFavorites)
+	{
+		DefaultMutableTreeNode base = new DefaultMutableTreeNode("Favorites");
+		for(Iterator<Album> i = userFavorites.iterator(); i.hasNext();)
+		{
+			Album album = (Album) i.next();
+			
+			DefaultMutableTreeNode albumTree = new DefaultMutableTreeNode(album.getName());
+			
+			for(Iterator<Song> j = album.getSongs().iterator(); j.hasNext();)
+			{
+				Song song = (Song) j.next();
+				
+				albumTree.add(new DefaultMutableTreeNode(song.getName()));
+			}
+			
+			base.add(albumTree);
+		}
+		
+		return base;
+//		return new DefaultMutableTreeNode(name)
+//		{
+//			private static final long serialVersionUID = 1L;
+//			{
+//				String soapMsg = soapString.replace("{OBJECT_ID}", objectID);
+//
+//				ArrayList<Object> items = (ArrayList<Object>) SOAP.getItems(soapMsg, serverURL);
+//
+//				for (Iterator<Object> i = items.iterator(); i.hasNext();)
+//				{
+//					String[] next = (String[]) i.next();
+//					
+//					//	next[0] = String containing title of item
+//					//	next[1] = String containing server ID of item
+//					//	next[2] = String containing server URL of item, if item is a song
+//					//	next[3] = String containing duration of item, if item is a song
+//					//	next[4] = String containing artist of item, if item is a song
+////						System.out.println("[[" +next[0] + " | " + next[1] + " | " + next[2] + " | " + next[3]);
+//					
+//					DefaultMutableTreeNode node = calculateTreeNodeRecursive(next[0], next[1]);
+//					
+//					// If the current album is not approved, do not add it to the tree
+//					if(albums.containsKey(next[0]) && !Settings.getInstance().isAlbumApproved(next[0], currentApprovalLevel))
+//					{
+//						continue;
+//					}
+//					
+//					add(node);
+//					
+//					// Handle nodes that are songs, designated by the item having a server URL
+//					if(next[2].length() != 0)
+//					{
+//						Album album = albums.get(name);
+//						if(album == null)
+//						{
+//							album = new Album(name);
+//							albums.put(name, album);
+//						}
+//						
+//						Song song = new Song();
+//						song.setName(next[0]);
+//						song.setURL(next[2]);
+//						song.setLength(next[3]);
+//						song.setArtist(next[4]);
+//						
+//						album.addSong(song);
+//					}
+//				}
+//			};
+//		};
 	}
 
 

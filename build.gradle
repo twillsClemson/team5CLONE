@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 apply plugin: 'jacoco'
 
 
-mainClassName = "data.MainWindow"
+mainClassName = "cpsc3720.team5.data.MainWindow"
 
 // Ensure Java 1.7 compatibility
 sourceCompatibility = 1.7
@@ -18,18 +18,20 @@ dependencies {
   // Include all jars in lib folder:
   compile fileTree(dir: 'lib', include: ['*.jar'])
   
+  compile files("${System.properties['java.home']}/../lib/tools.jar")
   compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
   compile 'javax.media:jmf:2.1.1e'
   compile 'com.google.code.gson:gson:2.6.1'
-  
-  testCompile 'junit:junit:4.12'
+
 }
 
 //create a single Jar with all dependencies
 task fatJar(type: Jar) {
     manifest {
         attributes 'Main-Class': "$mainClassName"
-    }
+		
+
+ }
     baseName = project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     {

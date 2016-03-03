@@ -31,6 +31,11 @@ public class UserProfiles {
 		return false;
 	}
 	
+	public ArrayList<Album> getFavorites()
+	{
+		return favorites;
+	}
+	
 	public boolean hasFavorite(Album album)
 	{
 		for(Iterator<Album> i = favorites.iterator(); i.hasNext();)
