@@ -299,6 +299,7 @@ public class MainWindow {
 		JPanel pnlPlayControl = new JPanel();
 		
 		JPanel pnlSongList = new JPanel();
+		
 		GroupLayout gl_pnlPlayer = new GroupLayout(pnlPlayer);
 		gl_pnlPlayer.setHorizontalGroup(
 			gl_pnlPlayer.createParallelGroup(Alignment.LEADING)
@@ -354,10 +355,10 @@ public class MainWindow {
 		header.setForeground(Color.white);
 		albumTable.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, null, null}
+				{null, null, null, null}
 			},
 			new String[] {
-				"#", "Track Name", "Song Duration"
+				"#", "Track Name", "Artist", "Song Duration"
 			}
 		));
 		
@@ -704,6 +705,7 @@ public class MainWindow {
 //			System.out.println("]");
 //		}
 		
+		System.out.println("Trying to select " + ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString());
 		Album album = libraryAlbums.get( ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString() );
 		if(album != null)
 		{
@@ -724,7 +726,7 @@ public class MainWindow {
 			for(Iterator<Song> j = album.getSongs().iterator(); j.hasNext();)
 			{
 				Song song = j.next();
-				Object[] row = new Object[]{ new Integer(counter++), song.getName(), song.getLength() };
+				Object[] row = new Object[]{ new Integer(counter++), song.getName(), song.getArtist(), song.getLength() };
 				addToAlbumTable(row);
 //				System.out.println("  " + nextJ.getName() + " | " + nextJ.getLength() + " | " + nextJ.getURL());
 			}

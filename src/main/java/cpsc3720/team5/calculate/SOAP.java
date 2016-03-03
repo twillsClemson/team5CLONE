@@ -86,7 +86,7 @@ public class SOAP {
 //		System.out.println("FinalStr \n" + finalStr);
 		
 //			System.out.println(finalStr);		
-//		System.out.println(finalStr.replace(">", ">\n"));		
+		System.out.println(finalStr.replace(">", ">\n"));		
 		
 		// Overall index
 		int index = finalStr.indexOf("<container", 0);
