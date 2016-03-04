@@ -1,13 +1,14 @@
 package cpsc3720.team5.window;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JTree;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -68,7 +69,6 @@ public class MainWindow {
 	private JButton btnFavoriteAlbum;
 	
 	JButton restrictButton = new JButton("Restrict Album");
-	private JButton btnRestrict;
 	
 	private Map<String, Album> libraryAlbums = new HashMap<String, Album>();
 
@@ -388,7 +388,7 @@ public class MainWindow {
 		lblAlbumArtist.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAlbumArtist.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
-		btnFavoriteAlbum = new JButton("Favorite Album");
+		btnFavoriteAlbum = new JButton("");
 		
 		btnFavoriteAlbum.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0)
@@ -397,40 +397,39 @@ public class MainWindow {
 			}
 		});
 		btnFavoriteAlbum.setEnabled(false);
+		
+		ImageIcon icon = new ImageIcon(MainWindow.class.getResource("/icons/Favorite.png"));
+		btnFavoriteAlbum.setIcon(new ImageIcon(icon.getImage().getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH)));
+		
+		icon = new ImageIcon(MainWindow.class.getResource("/icons/Unfavorite.png"));
+		btnFavoriteAlbum.setDisabledIcon(new ImageIcon(icon.getImage().getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH)));
 
-		btnRestrict = new JButton("Restrict Album");
-		btnRestrict.setEnabled(false);
 		
 		GroupLayout gl_pnlAlbumInfo = new GroupLayout(pnlAlbumInfo);
 		gl_pnlAlbumInfo.setHorizontalGroup(
 			gl_pnlAlbumInfo.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_pnlAlbumInfo.createSequentialGroup()
-					.addContainerGap(314, Short.MAX_VALUE)
-					.addGroup(gl_pnlAlbumInfo.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, gl_pnlAlbumInfo.createSequentialGroup()
-							.addComponent(lblAlbumArtist, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
-							.addComponent(btnFavoriteAlbum, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE))
-						.addGroup(Alignment.TRAILING, gl_pnlAlbumInfo.createSequentialGroup()
-							.addComponent(lblAlbumTitle, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
-							.addComponent(btnRestrict, GroupLayout.PREFERRED_SIZE, 132, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap())
+					.addContainerGap(311, Short.MAX_VALUE)
+					.addGroup(gl_pnlAlbumInfo.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblAlbumTitle, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblAlbumArtist, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE))
+					.addGap(214)
+					.addComponent(btnFavoriteAlbum, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
+					.addGap(20))
 		);
 		gl_pnlAlbumInfo.setVerticalGroup(
-			gl_pnlAlbumInfo.createParallelGroup(Alignment.TRAILING)
-				.addGroup(Alignment.LEADING, gl_pnlAlbumInfo.createSequentialGroup()
-					.addGap(18)
-					.addComponent(lblAlbumTitle)
-					.addGap(18)
-					.addComponent(lblAlbumArtist)
-					.addContainerGap(16, Short.MAX_VALUE))
+			gl_pnlAlbumInfo.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_pnlAlbumInfo.createSequentialGroup()
-					.addContainerGap(19, Short.MAX_VALUE)
-					.addComponent(btnRestrict)
-					.addGap(18)
-					.addComponent(btnFavoriteAlbum)
-					.addContainerGap())
+					.addGroup(gl_pnlAlbumInfo.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_pnlAlbumInfo.createSequentialGroup()
+							.addGap(18)
+							.addComponent(lblAlbumTitle)
+							.addGap(18)
+							.addComponent(lblAlbumArtist))
+						.addGroup(gl_pnlAlbumInfo.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(btnFavoriteAlbum, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap(16, Short.MAX_VALUE))
 		);
 		pnlAlbumInfo.setLayout(gl_pnlAlbumInfo);
 		
@@ -443,14 +442,28 @@ public class MainWindow {
 		JLabel lblSongDuration = new JLabel("1:00");
 		lblSongDuration.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
-		JButton btnPause = new JButton("Pause");
+
+		
+		JButton btnPause = new JButton("");
+//		btnPause.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Pause.png")));
 		btnPause.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		
-		JButton btnPlay = new JButton("Play");
+		icon = new ImageIcon(MainWindow.class.getResource("/icons/Pause.png"));
+		btnPause.setIcon(new ImageIcon(icon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH)));
+		
+		JButton btnPlay = new JButton("");
+//		btnPlay.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Play.png")));
 		btnPlay.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		
-		JButton btnStop = new JButton("Stop");
+		icon = new ImageIcon(MainWindow.class.getResource("/icons/play.png"));
+		btnPlay.setIcon(new ImageIcon(icon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH)));
+		
+		JButton btnStop = new JButton("");
+//		btnStop.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Stop.png")));
 		btnStop.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		
+		icon = new ImageIcon(MainWindow.class.getResource("/icons/Stop.png"));
+		btnStop.setIcon(new ImageIcon(icon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH)));
 		
 		JLabel lblSongName = new JLabel("Song Name - Album Name");
 		lblSongName.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -459,37 +472,35 @@ public class MainWindow {
 			gl_pnlPlayControl.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_pnlPlayControl.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_pnlPlayControl.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlPlayControl.createParallelGroup(Alignment.LEADING)
-							.addGroup(gl_pnlPlayControl.createSequentialGroup()
-								.addComponent(lblZero)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(sliderSong, GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(lblSongDuration)
-								.addContainerGap())
-							.addGroup(Alignment.TRAILING, gl_pnlPlayControl.createSequentialGroup()
-								.addComponent(btnPause, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(btnPlay, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(btnStop, GroupLayout.PREFERRED_SIZE, 115, GroupLayout.PREFERRED_SIZE)
-								.addGap(183)))
-						.addGroup(Alignment.TRAILING, gl_pnlPlayControl.createSequentialGroup()
-							.addComponent(lblSongName)
-							.addGap(254))))
+					.addGroup(gl_pnlPlayControl.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_pnlPlayControl.createSequentialGroup()
+							.addComponent(lblZero)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(sliderSong, GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(lblSongDuration)
+							.addContainerGap())
+						.addGroup(gl_pnlPlayControl.createSequentialGroup()
+							.addGroup(gl_pnlPlayControl.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_pnlPlayControl.createSequentialGroup()
+									.addComponent(btnPlay, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnStop, GroupLayout.PREFERRED_SIZE, 58, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnPause, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblSongName))
+							.addGap(220))))
 		);
 		gl_pnlPlayControl.setVerticalGroup(
 			gl_pnlPlayControl.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_pnlPlayControl.createSequentialGroup()
 					.addComponent(lblSongName)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_pnlPlayControl.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_pnlPlayControl.createParallelGroup(Alignment.BASELINE)
-							.addComponent(btnPause)
-							.addComponent(btnPlay, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-						.addComponent(btnStop, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+					.addGroup(gl_pnlPlayControl.createParallelGroup(Alignment.LEADING)
+						.addComponent(btnPlay)
+						.addComponent(btnStop)
+						.addComponent(btnPause, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_pnlPlayControl.createParallelGroup(Alignment.TRAILING)
 						.addComponent(sliderSong, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblSongDuration)
@@ -739,8 +750,6 @@ public class MainWindow {
 				btnFavoriteAlbum.setEnabled(false);
 			}
 			
-			btnRestrict.setEnabled(true);
-			
 			int counter = 1;
 			for(Iterator<Song> j = album.getSongs().iterator(); j.hasNext();)
 			{
@@ -754,7 +763,6 @@ public class MainWindow {
 		else
 		{
 			btnFavoriteAlbum.setEnabled(false);
-			btnRestrict.setEnabled(false);
 		}
 
 
