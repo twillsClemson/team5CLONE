@@ -16,7 +16,7 @@ import java.io.IOException;
 public class Settings {
 	private static Settings set = null;
 	private ArrayList<UserProfiles> profiles = null;
-	private final int approvalLevels = 5;
+	private int approvalLevels = 3;
 	private Map<Album, Integer> approved = null;
 	private String url = null;
 	public static final String tempFilePath = "./temp/Settings.json";
@@ -63,7 +63,10 @@ public class Settings {
 //	{
 //		approved.put(album, Math.max(album.getApprovalLevel(), approvalLevels));
 //	}
-	
+	public void setApprovalLevels(int levels)
+	{
+		approvalLevels = levels;
+	}
 	public void addApprovedAlbum(Album album, int approvalLevel) {
 		album.setApprovalLevel(approvalLevel);
 		approved.put(album, Math.max(approvalLevel, approvalLevels));
@@ -156,7 +159,10 @@ public class Settings {
 		return set;
 
 	}
-	
+	public void applySettings()
+	{
+		
+	}
 	public String getURL()
 	{
 		return url;

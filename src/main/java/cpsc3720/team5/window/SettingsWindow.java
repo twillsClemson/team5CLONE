@@ -1,5 +1,8 @@
 package cpsc3720.team5.window;
 import java.awt.EventQueue;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JFrame;
 import javax.swing.GroupLayout;
@@ -14,8 +17,15 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableModel;
+
+import cpsc3720.team5.data.Album;
+import cpsc3720.team5.data.Settings;
+import cpsc3720.team5.data.UserProfiles;
+
 import javax.swing.JButton;
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class SettingsWindow {
 
@@ -23,6 +33,7 @@ public class SettingsWindow {
 	private JTextField txtDefaultUrl;
 	private JTable table;
 	private JTable table_1;
+	private Settings setting = Settings.getInstance();
 	/**
 	 * Launch the application.
 	 */
@@ -46,6 +57,7 @@ public class SettingsWindow {
 	
 	/**
 	 * Create the application.
+	 * @wbp.parser.entryPoint
 	 */
 	public SettingsWindow() {
 		initialize();
@@ -139,13 +151,15 @@ public class SettingsWindow {
 		);
 		
 		table_1 = new JTable();
-		table_1.setModel(new DefaultTableModel(
-				new Object[][] {
-					{"1989", "4"},
-					{"21", "3"},
-					{"To Pimp a Butterfly", "5"},
-					{"Beethoven", "0"},
-				},
+		Map<Album, Integer> albums = setting.getApproved();
+		Object[][] albumLst = new Object[setting.getApproved().size()][1];
+		int i = 0;
+		for(Entry<Album, Integer> album : albums.entrySet())
+		{
+			albumLst[i] = new Object[] {album.getKey().name, album.getValue()};
+			i++;
+		}
+		table_1.setModel(new DefaultTableModel(albumLst,
 				new String[] {
 					"Album Name", "Restriction Level"
 				}
@@ -190,13 +204,16 @@ public class SettingsWindow {
 					.addContainerGap())
 		);
 		table = new JTable();
+		ArrayList<UserProfiles> profs  = setting.getProfiles();
+		Object[][] profLst = new Object[profs.size()][1];
+		i = 0;
+		for(UserProfiles prof : profs)
+		{
+			profLst[i] = new Object[] {prof.getName(),prof.getPIN(), prof.getAdmin(), prof.getRestrictionLevel(), prof.getProfilePic()};
+			i++;
+		}
 		table.setModel(new DefaultTableModel(
-				new Object[][] {
-					{"Jonathan Sarasua", "1111", "Admin", "0", "pic.img"},
-					{"Christian Trull", "2222", "Child", "3", "loser.jpeg"},
-					{"Scott Seeman", "3333", "Child", "5", "bronzelyfe.jpeg"},
-					{"TJ", "4444", "Child", "1", "goldLord.gif"},
-				},
+				profLst,
 				new String[] {
 					"User Name", "PIN", "User Type", "Restriction Level", "Profile Picture"
 				}
@@ -208,6 +225,15 @@ public class SettingsWindow {
 		scrollPane.setViewportView(table);
 		panel_1.setLayout(gl_panel_1);
 		frame.getContentPane().setLayout(groupLayout);
+		
+		btnApplyChanges_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				for(int i = 0; i < table_1.getRowCount(); i++)
+				{
+					
+				}
+			}
+		});
 	}
 
 }
