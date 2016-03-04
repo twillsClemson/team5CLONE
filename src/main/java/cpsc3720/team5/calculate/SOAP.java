@@ -10,7 +10,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-// SOAP communication must be abstracted into a separate class that returns the results in the form of a list of objects. Comprehensive unit tests are required for this component
+// SOAP communication must be abstracted into a separate class that returns the results in the form of a list of objects.
 public class SOAP {
 
 	// Returns a List of Object Arrays of the following format:
@@ -18,11 +18,10 @@ public class SOAP {
 	//		Object[1] = String containing server ID of item
 	//		Object[2] = String containing server URL of item, if item is a song
 	//		Object[3] = String containing duration of item, if item is a song
+	//		Object[4] = String containing artist of item, if item is a song
 	public static List<Object> getItems(String soapMsg, String URLInput) throws IOException
 	{
 		String resultStr = getSoapMsg(soapMsg, URLInput);
-
-//		System.out.println("---\n" + resultStr + "\n---");
 
 		if(resultStr == null)
 		{
@@ -42,7 +41,6 @@ public class SOAP {
 		try
 		{
 			Request request = new Request.Builder()
-//				.url("http://127.0.0.1:5001/upnp/control/content_directory")
 					.url(URLInput)
 					.header("Soapaction", "\"urn:schemas-upnp-org:service:ContentDirectory:1#Browse\"")
 					.post(body)
@@ -68,25 +66,20 @@ public class SOAP {
 		}
 	}
 	
-	// The low-level algorithm used by getItems
+	// The low-level algorithm used by getItems to retrieve information about items on the server
 	private static List<Object> parseSoapMessage(String resultStr)
 	{
 		ArrayList<Object> ret = new ArrayList<Object>();
 		if(resultStr.length() == 0)
 			return ret;
 		
-//			System.out.println("Sample Soap response \n" + resultStr);
 		final String START_TAG = "<Result>";
 		final String END_TAG = "</Result>";
 		int startIndex = resultStr.indexOf(START_TAG) + START_TAG.length();
 		int endIndex = resultStr.indexOf(END_TAG);
 		String finalStr = resultStr.substring(startIndex, endIndex);
 		
-		finalStr = finalStr.replace("&lt;", "<").replace("&gt;",">");
-//		System.out.println("FinalStr \n" + finalStr);
-		
-//			System.out.println(finalStr);		
-		System.out.println(finalStr.replace(">", ">\n"));		
+		finalStr = finalStr.replace("&lt;", "<").replace("&gt;",">");	
 		
 		// Overall index
 		int index = finalStr.indexOf("<container", 0);
@@ -100,6 +93,7 @@ public class SOAP {
 			{
 				String sub = finalStr.substring(index, finalStr.indexOf("</container>", index));
 				
+				// Retrieve Object ID
 				startIndex = sub.indexOf("<container id=\"") + "<container id=\"".length();
 				endIndex = sub.indexOf("\"", startIndex);
 				
@@ -109,8 +103,8 @@ public class SOAP {
 				}
 				
 				ID = sub.substring(startIndex, endIndex);
-//				System.out.println("C: Object ID = " + ID);
 				
+				// Retrieve album title
 				startIndex = sub.indexOf("<dc:title>") + "<dc:title>".length();
 				endIndex = sub.indexOf("</dc:title>");
 				
@@ -120,7 +114,6 @@ public class SOAP {
 				}
 
 				title = sub.substring(startIndex, endIndex);
-//				System.out.println("C: Title     = " + title);
 				
 
 			} catch (StringIndexOutOfBoundsException ex)
@@ -132,7 +125,7 @@ public class SOAP {
 			
 			clipURL = "";
 			duration = "";
-			
+
 			ret.add( new String[] { title, ID, clipURL, duration, artist } );
 			
 			index = finalStr.indexOf("<container", index+1);
@@ -149,6 +142,7 @@ public class SOAP {
 			{
 				String sub = finalStr.substring(index, finalStr.indexOf("</item>", index));
 				
+				// Retrieve object ID
 				startIndex = sub.indexOf("<item id=\"") + "<item id=\"".length();
 				endIndex = sub.indexOf("\"", startIndex);
 				
@@ -160,6 +154,7 @@ public class SOAP {
 				ID = sub.substring(startIndex, endIndex);
 				System.out.println("Object ID = " + ID);
 				
+				// Retrieve song title
 				startIndex = sub.indexOf("<dc:title>") + "<dc:title>".length();
 				endIndex = sub.indexOf("</dc:title>");
 				
@@ -169,8 +164,8 @@ public class SOAP {
 				}
 
 				title = sub.substring(startIndex, endIndex);
-//				System.out.println("Title     = " + title);
 				
+				// Retrieve artist
 				startIndex = sub.indexOf("<upnp:artist>") + "<upnp:artist>".length();
 				endIndex = sub.indexOf("</upnp:artist>");
 				
@@ -180,8 +175,8 @@ public class SOAP {
 				}
 
 				artist = sub.substring(startIndex, endIndex);
-				System.out.println("Artist    = " + artist);
 				
+				// Retrieve URL of song
 				startIndex = sub.lastIndexOf("\">",  sub.indexOf("</res>")) + "\">".length();
 				endIndex = sub.indexOf("</res>");
 				
@@ -191,11 +186,8 @@ public class SOAP {
 				}
 
 				clipURL = sub.substring(startIndex, endIndex);
-//				System.out.println("ClipURL   = " + clipURL);
-				
-//				System.out.println("SUB = " + sub);
-				
-				
+
+				// Retrieve song length
 				startIndex = sub.indexOf("duration=\"") + "duration=\"".length();
 				endIndex = sub.indexOf("\"", startIndex);
 				
@@ -205,7 +197,6 @@ public class SOAP {
 				}
 				
 				duration = sub.substring(startIndex, endIndex);
-//				System.out.println("DURATION = " + duration);
 
 			} catch (StringIndexOutOfBoundsException ex)
 			{
@@ -217,13 +208,6 @@ public class SOAP {
 			
 			index = finalStr.indexOf("<item", index+1);
 		}
-
-	
-//		System.out.println("Return List\n");
-//		for(int i = 0; i < ret.size(); i++)
-//		{
-//			//System.out.println(((String[])(ret.get(i)))[0] + " " + ((String[])(ret.get(i)))[1] + " " + ((String[])(ret.get(i)))[2]);
-//		}
 		
 		return ret;
 	}
