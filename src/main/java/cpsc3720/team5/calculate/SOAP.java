@@ -79,7 +79,8 @@ public class SOAP {
 		int endIndex = resultStr.indexOf(END_TAG);
 		String finalStr = resultStr.substring(startIndex, endIndex);
 		
-		finalStr = finalStr.replace("&lt;", "<").replace("&gt;",">");	
+		finalStr = finalStr.replace("&lt;", "<").replace("&gt;",">");
+		System.out.println(finalStr);
 		
 		// Overall index
 		int index = finalStr.indexOf("<container", 0);

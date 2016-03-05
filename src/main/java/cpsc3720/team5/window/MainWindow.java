@@ -20,6 +20,8 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
@@ -60,6 +62,10 @@ public class MainWindow {
 	private JTable albumTable;
 	private static SettingsWindow settingsWindow = null;
 	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+	
+	private JLabel lblAlbumTitle;
+	private JLabel lblAlbumArtist;
+
 	
 	JTabbedPane tabbedPane;
 //	private Map<DefaultMutableTreeNode, String> songURLs;
@@ -230,6 +236,18 @@ public class MainWindow {
 		panelControl.add(pnlMediaPlayer, "2");
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		
+		ChangeListener changeListener = new ChangeListener() {
+			public void stateChanged(ChangeEvent changeEvent) {
+				resetAlbumTable();
+				
+				JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
+				int index = sourceTabbedPane.getSelectedIndex();
+				System.out.println("Tab changed to: " + sourceTabbedPane.getTitleAt(index));
+			}
+		};
+		tabbedPane.addChangeListener(changeListener);
+		
 //		tabbedPane.addTab("Favorites", createFavoritesTemplate("Favorites"));
 //		tabbedPane.addTab("Library", createLibraryTemplate("Library"));
 		
@@ -380,11 +398,11 @@ public class MainWindow {
 		scrlPaneSongs.setViewportView(albumTable);
 		pnlSongList.setLayout(gl_pnlSongList);
 		
-		JLabel lblAlbumTitle = new JLabel("Album Title");
+		lblAlbumTitle = new JLabel("Select an album");
 		lblAlbumTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAlbumTitle.setFont(new Font("Tahoma", Font.BOLD, 18));
 		
-		JLabel lblAlbumArtist = new JLabel("Album Artist");
+		lblAlbumArtist = new JLabel("");
 		lblAlbumArtist.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAlbumArtist.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
@@ -409,11 +427,14 @@ public class MainWindow {
 		gl_pnlAlbumInfo.setHorizontalGroup(
 			gl_pnlAlbumInfo.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_pnlAlbumInfo.createSequentialGroup()
-					.addContainerGap(311, Short.MAX_VALUE)
-					.addGroup(gl_pnlAlbumInfo.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblAlbumTitle, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblAlbumArtist, GroupLayout.PREFERRED_SIZE, 125, GroupLayout.PREFERRED_SIZE))
-					.addGap(214)
+					.addContainerGap(168, Short.MAX_VALUE)
+					.addGroup(gl_pnlAlbumInfo.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, gl_pnlAlbumInfo.createSequentialGroup()
+							.addComponent(lblAlbumTitle, GroupLayout.PREFERRED_SIZE, 418, GroupLayout.PREFERRED_SIZE)
+							.addGap(64))
+						.addGroup(Alignment.TRAILING, gl_pnlAlbumInfo.createSequentialGroup()
+							.addComponent(lblAlbumArtist, GroupLayout.PREFERRED_SIZE, 275, GroupLayout.PREFERRED_SIZE)
+							.addGap(135)))
 					.addComponent(btnFavoriteAlbum, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
 					.addGap(20))
 		);
@@ -550,8 +571,8 @@ public class MainWindow {
 			currentUser.addFavorite(Settings.getInstance().getAlbum("Album A"));
 			/////////////////////
 			
-			Component compLibrary = createLibraryTemplate("Library");
-			tabbedPane.addTab("Favorites", createFavoritesTemplate("WERWERWER"));
+			Component compLibrary = createLibraryTemplate();
+			tabbedPane.addTab("Favorites", createFavoritesTemplate());
 			tabbedPane.addTab("Library", compLibrary);
 			
 			
@@ -565,10 +586,10 @@ public class MainWindow {
 	}
 	
 	// Create JPanels that are used in Favorites tab
-	private JPanel createFavoritesTemplate(String tabName)
+	private JPanel createFavoritesTemplate()
 	{
 		JPanel pnlTreePanel = new JPanel();
-		pnlTreePanel.setName(tabName);
+		pnlTreePanel.setName("Favorites");
 		
 		UIManager.put("Tree.rendererFillBackground", false);
 		JTree treeFavLib = new JTree();
@@ -591,7 +612,7 @@ public class MainWindow {
 //				}
 //		));
 
-		treeFavLib.setName(tabName + "Tree");
+		treeFavLib.setName("Favorites" + "Tree");
 		GroupLayout gl_pnlTreePanel = new GroupLayout(pnlTreePanel);
 		gl_pnlTreePanel.setHorizontalGroup(
 			gl_pnlTreePanel.createParallelGroup(Alignment.LEADING)
@@ -612,16 +633,22 @@ public class MainWindow {
 	}
 	
 	// Create JPanels that are used in Library tab
-	private JPanel createLibraryTemplate(String tabName)
+	private JPanel createLibraryTemplate()
 	{
 		JPanel template = new JPanel();
-		template.setName(tabName);
+		template.setName("Library");
 		
 		UIManager.put("Tree.rendererFillBackground", false);
 		final JTree tree = new JTree();
 		
 		tree.setBackground(null);
-		tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode(tabName, Settings.getInstance().getURL(), libraryAlbums, currentUser.getRestrictionLevel())));
+		try
+		{
+			tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode("Library", Settings.getInstance().getURL(), libraryAlbums, currentUser.getRestrictionLevel())));
+		} catch(IOException ex)
+		{
+			tree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("No compatible server found")));
+		}
 		
 		// Debug print out all albums and contents
 //		for(Iterator<Entry<String, Album> > i = libraryAlbums.entrySet().iterator(); i.hasNext();)
@@ -639,12 +666,18 @@ public class MainWindow {
 		{
 			public void valueChanged(TreeSelectionEvent e)
 			{
-				onLibraryTreeChange(tree);
+				String[] info = onLibraryTreeChange(tree);
+				
+
+				lblAlbumTitle.setText(info[0]);
+				lblAlbumArtist.setText(info[1]);
+				
+				
 			}
 		});
 		
 
-		tree.setName(tabName + "Tree");
+		tree.setName("Library" + "Tree");
 		GroupLayout gl_template = new GroupLayout(template);
 		gl_template.setHorizontalGroup(
 			gl_template.createParallelGroup(Alignment.LEADING)
@@ -671,6 +704,8 @@ public class MainWindow {
 	
 	public void resetAlbumTable()
 	{
+		lblAlbumArtist.setText("");
+		lblAlbumTitle.setText("Select an Album");
 		DefaultTableModel model = ((DefaultTableModel) albumTable.getModel());
 		
 		while(model.getRowCount() > 0)
@@ -718,9 +753,10 @@ public class MainWindow {
 		
 	}
 	
-	private void onLibraryTreeChange(JTree tree)
+	private String[] onLibraryTreeChange(JTree tree)
 	{
 		resetAlbumTable();
+		String[] ret = {"Select an Album", ""};
 		
 //		for(Iterator<Entry<String, Album> > i = libraryAlbums.entrySet().iterator(); i.hasNext();)
 //		{
@@ -740,7 +776,13 @@ public class MainWindow {
 		if(album != null)
 		{
 			selectedAlbum = album;
+			ret[0] = album.getName();
 			
+			if(album.getSongs().size() != 0)
+			{
+				ret[1] = album.getSongs().get(0).getArtist();
+			}
+
 			if(!currentUser.hasFavorite(album))
 			{
 				btnFavoriteAlbum.setEnabled(true);
@@ -764,6 +806,8 @@ public class MainWindow {
 		{
 			btnFavoriteAlbum.setEnabled(false);
 		}
+		
+		return ret;
 
 
 		

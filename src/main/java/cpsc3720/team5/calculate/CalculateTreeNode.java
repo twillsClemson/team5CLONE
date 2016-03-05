@@ -31,6 +31,7 @@ public class CalculateTreeNode
 	// Recursively generates the nodes to be used in the "Library" tab of the main window
 	// Filters any results that the current user does not have permissions for
 	static public DefaultMutableTreeNode calculateTreeNode(String name, String newServerURL, Map<String, Album> newAlbums, int newCurrentApprovalLevel)
+		throws IOException
 	{
 		serverURL = newServerURL;
 		currentApprovalLevel = newCurrentApprovalLevel;
@@ -40,7 +41,7 @@ public class CalculateTreeNode
 	}
 	
 	// Recursive algorithm used by calling function, "calculateTreeNode()"
-	static private DefaultMutableTreeNode calculateTreeNodeRecursive(final String name, final String objectID)
+	static private DefaultMutableTreeNode calculateTreeNodeRecursive(final String name, final String objectID) throws IOException
 	{
 		DefaultMutableTreeNode ret = new DefaultMutableTreeNode(name);
 		
@@ -48,13 +49,8 @@ public class CalculateTreeNode
 
 		ArrayList<Object> items;
 
-		try
-		{
-			items = (ArrayList<Object>) SOAP.getItems(soapMsg, serverURL);
-		} catch (IOException ex)
-		{
-			return null;
-		}
+		items = (ArrayList<Object>) SOAP.getItems(soapMsg, serverURL);
+
 
 		for (Iterator<Object> i = items.iterator(); i.hasNext();)
 		{
@@ -90,6 +86,7 @@ public class CalculateTreeNode
 				song.setURL(next[2]);
 				song.setLength(next[3]);
 				song.setArtist(next[4]);
+				song.setAlbumName(name);
 				
 				album.addSong(song);
 			}

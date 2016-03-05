@@ -6,6 +6,7 @@ public class Song
 	String length;
 	String artist;
 	String URL;
+	String albumName;
 	
 	public Song()
 	{
@@ -13,15 +14,28 @@ public class Song
 		length = "";
 		artist = "";
 		URL = "";
+		
 	}
 	
-	public Song(String _name, String _length, String _URL, String _artist)
+	public Song(String _name, String _length, String _URL, String _artist, String _albumName)
 	{
 		name = _name;
 		length = _length;
 		URL = _URL;
 		artist = _artist;
+		albumName = _albumName;
 	}
+	
+	public String getAlbumName()
+	{
+		return albumName;
+	}
+	
+	public void setAlbumName(String _albumName)
+	{
+		albumName = _albumName;
+	}
+	
 	
 	public String getFileName()
 	{
