@@ -1,4 +1,4 @@
-package cpsc3720.team5.window;
+package cpsc3720.team5.view;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -30,11 +30,11 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 
-import cpsc3720.team5.calculate.*;
-import cpsc3720.team5.data.Album;
-import cpsc3720.team5.data.Settings;
-import cpsc3720.team5.data.Song;
-import cpsc3720.team5.data.UserProfiles;
+import cpsc3720.team5.controller.*;
+import cpsc3720.team5.model.Album;
+import cpsc3720.team5.model.Settings;
+import cpsc3720.team5.model.Song;
+import cpsc3720.team5.model.UserProfiles;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;

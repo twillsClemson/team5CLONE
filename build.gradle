@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 apply plugin: 'jacoco'
 
 
-mainClassName = "cpsc3720.team5.data.MainWindow"
+mainClassName = "cpsc3720.team5.view.MainWindow"
 
 // Ensure Java 1.7 compatibility
 sourceCompatibility = 1.7

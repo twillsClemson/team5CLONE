@@ -1,4 +1,4 @@
-package cpsc3720.team5.calculate;
+package cpsc3720.team5.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;

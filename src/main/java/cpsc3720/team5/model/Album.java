@@ -1,4 +1,4 @@
-package cpsc3720.team5.data;
+package cpsc3720.team5.model;
 
 import java.util.ArrayList;
 

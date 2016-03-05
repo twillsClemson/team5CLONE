@@ -1,4 +1,4 @@
-package cpsc3720.team5.window;
+package cpsc3720.team5.view;
 import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.Map;
@@ -18,9 +18,9 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableModel;
 
-import cpsc3720.team5.data.Album;
-import cpsc3720.team5.data.Settings;
-import cpsc3720.team5.data.UserProfiles;
+import cpsc3720.team5.model.Album;
+import cpsc3720.team5.model.Settings;
+import cpsc3720.team5.model.UserProfiles;
 
 import javax.swing.JButton;
 import java.awt.Dimension;
