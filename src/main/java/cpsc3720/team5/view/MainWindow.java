@@ -553,7 +553,7 @@ public class MainWindow {
 			// Resolve currentUser
 			UserProfiles currentUser = new UserProfiles();
 			currentUser.setName("John Smith");
-			currentUser.setRestrictionLevel(2);
+			currentUser.setRestrictionLevel(5);
 			
 			// Remember currentUser
 			Settings.getInstance().setCurrentUser(currentUser);
