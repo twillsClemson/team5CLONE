@@ -48,14 +48,14 @@ import java.util.Map.Entry;
 public class MainWindow {
 	
 	private Album selectedAlbum = null;
-	private UserProfiles profiles[] = null;
+	private ArrayList<UserProfiles> profiles = null;
 
 	JFrame frameMain = new JFrame("Media Player Login");
 	JPanel panelControl = new JPanel();
 	JPanel loginPanel = new JPanel();
 	JPanel pnlMediaPlayer = new JPanel();
 	CardLayout cl = new CardLayout();
-	private JPasswordField passwordField;
+	private JPasswordField txtfldPIN;
 	private JTable albumTable;
 	private SettingsWindow settingsWindow = null;
 	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -88,7 +88,7 @@ public class MainWindow {
 	
 	public void getUsersInformation()
 	{
-		
+		profiles = Settings.getInstance().getProfiles();
 		
 	}
 
@@ -108,8 +108,8 @@ public class MainWindow {
 		JLabel lblEnterPin = new JLabel("Enter PIN:");
 		lblEnterPin.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
-		passwordField = new JPasswordField(4);
-		passwordField.setAction(
+		txtfldPIN = new JPasswordField(4);
+		txtfldPIN.setAction(
 				new AbstractAction()
 				{
 				    @Override
@@ -120,7 +120,7 @@ public class MainWindow {
 				}
 		);
 		
-		PlainDocument document = (PlainDocument) passwordField.getDocument();
+		PlainDocument document = (PlainDocument) txtfldPIN.getDocument();
         document.setDocumentFilter(new DocumentFilter() {
 
             @Override
@@ -134,68 +134,74 @@ public class MainWindow {
 
         });
 		
-		JButton loginButton = new JButton("Login");
-		loginButton.addActionListener(new ActionListener() {
+		JButton btnLogin = new JButton("Login");
+		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				checkPassword();
 			}
 		});
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		JScrollPane scrollPaneUserProfiles = new JScrollPane();
+		scrollPaneUserProfiles.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		
 		JLabel lblMediaPlayer = new JLabel("Media Player");
 		lblMediaPlayer.setFont(new Font("Tahoma", Font.BOLD, 46));
 		
-		JLabel lblNewLabel = new JLabel("Welcome User One!");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
+		JLabel lblTestlable = new JLabel("testlable");
+		int count = 0;
+		for(int i = 0; i < profiles.size(); i++)
+		{
+			count += 1;
+		}
+		lblTestlable.setText(Integer.toString(count));
 		
 		GroupLayout gl_loginPanel = new GroupLayout(loginPanel);
 		gl_loginPanel.setHorizontalGroup(
-			gl_loginPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_loginPanel.createSequentialGroup()
+			gl_loginPanel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_loginPanel.createSequentialGroup()
 					.addContainerGap(48, Short.MAX_VALUE)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 902, GroupLayout.PREFERRED_SIZE)
+					.addComponent(scrollPaneUserProfiles, GroupLayout.PREFERRED_SIZE, 902, GroupLayout.PREFERRED_SIZE)
 					.addGap(44))
 				.addGroup(gl_loginPanel.createSequentialGroup()
 					.addGap(358)
 					.addComponent(lblMediaPlayer)
-					.addContainerGap(590, Short.MAX_VALUE))
+					.addContainerGap(339, Short.MAX_VALUE))
 				.addGroup(gl_loginPanel.createSequentialGroup()
 					.addGap(350)
-					.addGroup(gl_loginPanel.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(lblNewLabel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, gl_loginPanel.createSequentialGroup()
-							.addComponent(lblEnterPin)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(passwordField, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(loginButton, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE)))
-					.addContainerGap(603, Short.MAX_VALUE))
+					.addComponent(lblEnterPin)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(txtfldPIN, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE)
+					.addGap(132)
+					.addComponent(lblTestlable)
+					.addContainerGap(214, Short.MAX_VALUE))
 		);
 		gl_loginPanel.setVerticalGroup(
-			gl_loginPanel.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_loginPanel.createSequentialGroup()
+			gl_loginPanel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_loginPanel.createSequentialGroup()
 					.addContainerGap(51, Short.MAX_VALUE)
 					.addComponent(lblMediaPlayer)
 					.addGap(32)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 340, GroupLayout.PREFERRED_SIZE)
-					.addGap(42)
-					.addComponent(lblNewLabel)
-					.addGap(27)
-					.addGroup(gl_loginPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblEnterPin)
-						.addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(loginButton))
+					.addComponent(scrollPaneUserProfiles, GroupLayout.PREFERRED_SIZE, 340, GroupLayout.PREFERRED_SIZE)
+					.addGroup(gl_loginPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_loginPanel.createSequentialGroup()
+							.addGap(94)
+							.addGroup(gl_loginPanel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lblEnterPin)
+								.addComponent(txtfldPIN, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(btnLogin)))
+						.addGroup(gl_loginPanel.createSequentialGroup()
+							.addGap(91)
+							.addComponent(lblTestlable)))
 					.addGap(124))
 		);
 		
 		JPanel pnlUsers = new JPanel();
-		scrollPane.setViewportView(pnlUsers);
-		pnlUsers.setLayout(null);
+		scrollPaneUserProfiles.setViewportView(pnlUsers);
 		
 		populateUserImages(pnlUsers);
+		pnlUsers.setLayout(new GridLayout(1, 0, 0, 0));
 		
 		loginPanel.setLayout(gl_loginPanel);
 		
@@ -220,7 +226,7 @@ public class MainWindow {
 		JButton btnLogout = new JButton("Logout");
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				passwordField.setText("");
+				txtfldPIN.setText("");
 				frameMain.setTitle("Media Player Login");
 				cl.show(panelControl, "1");
 				
@@ -498,61 +504,62 @@ public class MainWindow {
 		frameMain.getContentPane().add(panelControl);
 		frameMain.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frameMain.setVisible(true);
-		passwordField.requestFocusInWindow();
+		txtfldPIN.requestFocusInWindow();
 	}
 
 	// Populates users on the main login page to be selected and logged into
 	private void populateUserImages(JPanel pnlUsers)
 	{
-		JPanel pnlUserOne = new JPanel();
-		pnlUserOne.setBounds(10, 11, 216, 316);
-		pnlUsers.add(pnlUserOne);
-		
-		JButton button = new JButton("");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		button.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog1.png")));
-		button.setOpaque(false);
-		button.setContentAreaFilled(false);
-		button.setBorderPainted(false);
-		
-		JRadioButton rdbtnUserOne = new JRadioButton("User One");
-		rdbtnUserOne.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		GroupLayout gl_pnlUserOne = new GroupLayout(pnlUserOne);
-		gl_pnlUserOne.setHorizontalGroup(
-			gl_pnlUserOne.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlUserOne.createSequentialGroup()
-					.addGroup(gl_pnlUserOne.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pnlUserOne.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(button, GroupLayout.PREFERRED_SIZE, 196, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_pnlUserOne.createSequentialGroup()
-							.addGap(58)
-							.addComponent(rdbtnUserOne)))
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-		);
-		gl_pnlUserOne.setVerticalGroup(
-			gl_pnlUserOne.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnlUserOne.createSequentialGroup()
-					.addGap(64)
-					.addComponent(button, GroupLayout.PREFERRED_SIZE, 158, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(rdbtnUserOne)
-					.addContainerGap(58, Short.MAX_VALUE))
-		);
-		pnlUserOne.setLayout(gl_pnlUserOne);
-		
-		
+        ButtonGroup userRadioButtons = new ButtonGroup();
+        
+		for(int i = 0; i < profiles.size(); i++)
+		{
+			UserProfiles user = profiles.get(i);
+			JPanel pnlUserOne = new JPanel();
+			pnlUserOne.setBounds(10, 11, 216, 316);
+			pnlUsers.add(pnlUserOne);
+			
+			JButton btnIconUserOne = new JButton("");
+			btnIconUserOne.setIcon(new ImageIcon(MainWindow.class.getResource(user.getProfilePic())));
+			btnIconUserOne.setOpaque(false);
+			btnIconUserOne.setContentAreaFilled(false);
+			btnIconUserOne.setBorderPainted(false);
+			
+			JRadioButton rdbtnUserOne = new JRadioButton(user.getName());
+			rdbtnUserOne.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			GroupLayout gl_pnlUserOne = new GroupLayout(pnlUserOne);
+			gl_pnlUserOne.setHorizontalGroup(
+				gl_pnlUserOne.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_pnlUserOne.createSequentialGroup()
+						.addGroup(gl_pnlUserOne.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_pnlUserOne.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(btnIconUserOne, GroupLayout.PREFERRED_SIZE, 196, GroupLayout.PREFERRED_SIZE))
+							.addGroup(gl_pnlUserOne.createSequentialGroup()
+								.addGap(58)
+								.addComponent(rdbtnUserOne)))
+						.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+			);
+			gl_pnlUserOne.setVerticalGroup(
+				gl_pnlUserOne.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_pnlUserOne.createSequentialGroup()
+						.addGap(64)
+						.addComponent(btnIconUserOne, GroupLayout.PREFERRED_SIZE, 158, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addComponent(rdbtnUserOne)
+						.addContainerGap(58, Short.MAX_VALUE))
+			);
+			pnlUserOne.setLayout(gl_pnlUserOne);
+	        userRadioButtons.add(rdbtnUserOne);
+		}
 		
 	}
 	
 	private void checkPassword()
 	{
-		if(passwordField.getText().length() == 4 && !passwordField.getText().equals("0000"))
+		if(txtfldPIN.getText().length() == 4 && !txtfldPIN.getText().equals("0000"))
 		{
-			passwordField.setText("");
+			txtfldPIN.setText("");
 			frameMain.setTitle("Media Player");
 			
 			// Load settings for individual user should go here (setting the currentUser variable in the process)
@@ -594,7 +601,7 @@ public class MainWindow {
 		}
 		else
 		{
-			passwordField.setText("");
+			txtfldPIN.setText("");
 			JOptionPane.showMessageDialog(null, "Incorrect PIN entered! Please try again.", "Error Message", JOptionPane.INFORMATION_MESSAGE);				    
 		}
 	}
