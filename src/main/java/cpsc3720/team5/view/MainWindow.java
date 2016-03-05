@@ -666,7 +666,7 @@ public class MainWindow {
 		{
 			public void valueChanged(TreeSelectionEvent e)
 			{
-				String[] info = onLibraryTreeChange(tree);
+				String[] info = onLibraryTreeChange(((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString());
 				
 				lblAlbumTitle.setText(info[0]);
 				lblAlbumArtist.setText(info[1]);
@@ -748,7 +748,7 @@ public class MainWindow {
 		
 	}
 	
-	private String[] onLibraryTreeChange(JTree tree)
+	private String[] onLibraryTreeChange(String treeName)
 	{
 		resetAlbumTable();
 		String[] ret = {"Select an Album", ""};
@@ -767,7 +767,7 @@ public class MainWindow {
 //		}
 		
 //		System.out.println("Trying to select " + ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString());
-		Album album = libraryAlbums.get( ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString() );
+		Album album = libraryAlbums.get( treeName );
 		if(album != null)
 		{
 			selectedAlbum = album;

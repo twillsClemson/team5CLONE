@@ -69,10 +69,13 @@ public class CalculateTreeNode
 				continue;
 			}
 			
-			ret.add(node);
-			
-			// Handle nodes that are songs, designated by the item having a server URL
-			if(next[2].length() != 0)
+			// Handle albums and folders by adding them to the tree
+			// (A node is an album or folder if it does not have a server URL)
+			if(next[2].length() == 0)
+			{
+				ret.add(node);
+			}
+			else
 			{
 				Album album = albums.get(name);
 				if(album == null)
