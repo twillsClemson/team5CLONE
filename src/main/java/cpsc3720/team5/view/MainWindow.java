@@ -419,7 +419,7 @@ public class MainWindow {
 		ImageIcon icon = new ImageIcon(MainWindow.class.getResource("/icons/Favorite.png"));
 		btnFavoriteAlbum.setIcon(new ImageIcon(icon.getImage().getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH)));
 		
-		icon = new ImageIcon(MainWindow.class.getResource("/icons/Unfavorite.png"));
+		icon = new ImageIcon(MainWindow.class.getResource("/icons/Favorite_disabled.png"));
 		btnFavoriteAlbum.setDisabledIcon(new ImageIcon(icon.getImage().getScaledInstance(40, 40, java.awt.Image.SCALE_SMOOTH)));
 
 		
