@@ -73,8 +73,6 @@ public class MainWindow {
 	JButton favoriteAlbumButton = new JButton("Favorite Album");
 	private JButton btnFavoriteAlbum;
 	
-	JButton restrictButton = new JButton("Restrict Album");
-	
 	
 
 	/**
@@ -603,21 +601,7 @@ public class MainWindow {
 		
 		treeFavLib.setBackground(null);
 		treeFavLib.setModel(new DefaultTreeModel( 
-				CalculateTreeNode.calculateFavoritesTreeNode(Settings.getInstance().getCurrentUser().getFavorites())));
-//				new DefaultMutableTreeNode(tabName)
-//				{
-//					{
-//						DefaultMutableTreeNode node_1;
-//						
-//						node_1 = new DefaultMutableTreeNode("Placeholder 1");
-//						add(node_1);
-//						node_1 = new DefaultMutableTreeNode("Placeholder 2");
-//						add(node_1);
-//						node_1 = new DefaultMutableTreeNode("Placeholder 3");
-//						add(node_1);
-//					}
-//				}
-//		));
+				TreeNodeController.calculateFavoritesTreeNode(Settings.getInstance().getCurrentUser().getFavorites())));
 
 		treeFavLib.setName("Favorites" + "Tree");
 		GroupLayout gl_pnlTreePanel = new GroupLayout(pnlTreePanel);
@@ -651,7 +635,7 @@ public class MainWindow {
 		tree.setBackground(null);
 		try
 		{
-			tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode("Library", Settings.getInstance().getURL(),
+			tree.setModel(new DefaultTreeModel(TreeNodeController.calculateTreeNode("Library", Settings.getInstance().getURL(),
 					Settings.getInstance().getCurrentUser().getRestrictionLevel())));
 		} catch(IOException ex)
 		{
@@ -745,7 +729,7 @@ public class MainWindow {
 			for(Iterator<Song> i = songs.iterator(); i.hasNext();)
 			{
 				Song next = (Song) i.next();						 
-				Download.downloadTrack(next.getURL());
+				DownloadController.downloadTrack(next.getURL());
 			}
 		} catch (IOException e) 
 		{

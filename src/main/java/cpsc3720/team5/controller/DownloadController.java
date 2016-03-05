@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class Download
+public class DownloadController
 {
 	private static final String downloadsFolder = "./temp/";
 	

@@ -11,7 +11,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 // SOAP communication must be abstracted into a separate class that returns the results in the form of a list of objects.
-public class SOAP {
+public class SoapController {
 
 	// Returns a List of Object Arrays of the following format:
 	//		Object[0] = String containing title of item

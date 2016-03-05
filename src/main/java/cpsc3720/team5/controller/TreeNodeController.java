@@ -12,7 +12,7 @@ import cpsc3720.team5.model.Album;
 import cpsc3720.team5.model.Settings;
 import cpsc3720.team5.model.Song;
 
-public class CalculateTreeNode
+public class TreeNodeController
 {
 	
 	static public final String soapString = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>"
@@ -50,7 +50,7 @@ public class CalculateTreeNode
 
 		ArrayList<Object> items;
 
-		items = (ArrayList<Object>) SOAP.getItems(soapMsg, serverURL);
+		items = (ArrayList<Object>) SoapController.getItems(soapMsg, serverURL);
 
 
 		for (Iterator<Object> i = items.iterator(); i.hasNext();)
