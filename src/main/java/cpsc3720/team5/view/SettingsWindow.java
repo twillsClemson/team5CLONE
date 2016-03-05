@@ -1,6 +1,7 @@
 package cpsc3720.team5.view;
 import java.awt.EventQueue;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -34,6 +35,7 @@ public class SettingsWindow {
 	private JTable table;
 	private JTable table_1;
 	private Settings setting = Settings.getInstance();
+	private addUserWindow newUserWindow = null;
 	/**
 	 * Launch the application.
 	 */
@@ -100,7 +102,7 @@ public class SettingsWindow {
 		JLabel lblServerUrl = new JLabel("Server URL:");
 		
 		txtDefaultUrl = new JTextField();
-		txtDefaultUrl.setText("Server.sys.org");
+		txtDefaultUrl.setText(setting.getServerURL());
 		txtDefaultUrl.setColumns(10);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -150,13 +152,25 @@ public class SettingsWindow {
 					.addContainerGap())
 		);
 		
-		table_1 = new JTable();
-		Map<Album, Integer> albums = setting.getApproved();
+		table_1 = new JTable()
+				{
+
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1L;
+					public boolean isCellEditable(int row, int column) {              
+		                if(column == 0)
+		                	return false;
+		                else
+		                	return true;
+					}
+				};
+		ArrayList<Album> albums = setting.getApproved();
 		Object[][] albumLst = new Object[setting.getApproved().size()][1];
-		int i = 0;
-		for(Entry<Album, Integer> album : albums.entrySet())
+		for(int i = 0; i < setting.getApproved().size(); i++)
 		{
-			albumLst[i] = new Object[] {album.getKey().name, album.getValue()};
+			albumLst[i] = new Object[] {albums.get(i).name, albums.get(i).approvalLevel};
 			i++;
 		}
 		table_1.setModel(new DefaultTableModel(albumLst,
@@ -179,18 +193,30 @@ public class SettingsWindow {
 		JButton btnApplyChanges = new JButton("Apply Changes");
 		
 		JButton btnUndoChanges = new JButton("Undo Changes");
+		
+		JButton btnCreateNewUser = new JButton("Create New User");
+		btnCreateNewUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+					newUserWindow = new addUserWindow();
+					newUserWindow.main(null);
+			}
+		});
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
 			gl_panel_1.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panel_1.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
+						.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
+							.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
+							.addContainerGap())
 						.addGroup(gl_panel_1.createSequentialGroup()
 							.addComponent(btnApplyChanges)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnUndoChanges)))
-					.addContainerGap())
+							.addComponent(btnUndoChanges)
+							.addPreferredGap(ComponentPlacement.RELATED, 225, Short.MAX_VALUE)
+							.addComponent(btnCreateNewUser)
+							.addGap(31))))
 		);
 		gl_panel_1.setVerticalGroup(
 			gl_panel_1.createParallelGroup(Alignment.LEADING)
@@ -200,13 +226,14 @@ public class SettingsWindow {
 					.addGap(11)
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnApplyChanges)
-						.addComponent(btnUndoChanges))
+						.addComponent(btnUndoChanges)
+						.addComponent(btnCreateNewUser))
 					.addContainerGap())
 		);
 		table = new JTable();
 		ArrayList<UserProfiles> profs  = setting.getProfiles();
 		Object[][] profLst = new Object[profs.size()][1];
-		i = 0;
+		int i = 0;
 		for(UserProfiles prof : profs)
 		{
 			profLst[i] = new Object[] {prof.getName(),prof.getPIN(), prof.getAdmin(), prof.getRestrictionLevel(), prof.getProfilePic()};
@@ -228,12 +255,32 @@ public class SettingsWindow {
 		
 		btnApplyChanges_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				for(int i = 0; i < table_1.getRowCount(); i++)
+				ArrayList<Album> approve = new ArrayList<Album>();
+				Album al = null;
+				for(int i = 1; i < table_1.getRowCount(); i++)
 				{
-					
+					al = new Album();
+					if(table_1.getModel().getValueAt(i, 0) != null)
+					{
+						al = setting.getAlbum((String)table_1.getModel().getValueAt(i, 0));
+						al.setApprovalLevel((int)table_1.getModel().getValueAt(i, 1));
+						approve.add(al);
+					}
 				}
+				ArrayList<UserProfiles> profs = new ArrayList<UserProfiles>();
+				UserProfiles temp = null;
+				for(int i = 1; i < table.getRowCount(); i++)
+				{
+					temp = new UserProfiles();
+					temp.setName((String)table.getModel().getValueAt(i, 0));
+					temp.setPIN((int)table.getModel().getValueAt(i, 1));
+					temp.setAdmin((boolean)table.getModel().getValueAt(i, 2));
+					temp.setRestrictionLevel((int)table.getModel().getValueAt(i, 3));
+					profs.add(temp);
+				}
+				setting.applySettings(approve, txtDefaultUrl.getText(), profs);
+				setting.writeSettings();
 			}
 		});
 	}
-
 }

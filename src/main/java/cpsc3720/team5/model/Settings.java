@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,20 +19,18 @@ public class Settings {
 	private static Settings set = null;
 	private ArrayList<UserProfiles> profiles = null;
 	private int approvalLevels = 3;
-	private Map<Album, Integer> approved = null;
+	private ArrayList<Album> approved = null;
 	private String url = null;
 	public static final String tempFilePath = "./temp/Settings.json";
 	public static final String defaultURL = "http://127.0.0.1:5001/upnp/control/content_directory";
-	
 	private Map<String, Album> libraryAlbums = new HashMap<String, Album>();
-	
 	private UserProfiles currentUser = null;
 
 
 	private Settings() {
 		profiles = new ArrayList<UserProfiles>();
 
-		approved = new HashMap<Album, Integer>();
+		approved = new ArrayList<Album>();
 		url = defaultURL;
 	}
 	
@@ -49,7 +49,7 @@ public class Settings {
 		return currentUser;
 	}
 	
-	public Map<Album, Integer> getApproved()
+	public ArrayList<Album> getApproved()
 	{
 		return approved;
 	}
@@ -65,9 +65,16 @@ public class Settings {
 	}
 
 	public static Settings getInstance() {
-		if (set == null)
+		if (new File("./temp/Settings.json").exists())
+		{
 			set = new Settings();
-
+			set.readSettings();
+		}
+		else if(set == null && !new File("./temp/Settings.json").exists())
+		{
+			set = new Settings();
+		}
+		
 		return set;
 	}
 	
@@ -88,7 +95,7 @@ public class Settings {
 	}
 	public void addApprovedAlbum(Album album, int approvalLevel) {
 		album.setApprovalLevel(approvalLevel);
-		approved.put(album, Math.max(approvalLevel, approvalLevels));
+		approved.add(album);
 	}
 	
 	public boolean isAlbumApproved(Album album, int currentApprovalLevel)
@@ -122,20 +129,13 @@ public class Settings {
 	
 	public Album getAlbum(String albumName)
 	{
-		Iterator<Entry<Album, Integer> > it = approved.entrySet().iterator();
-		Album target;
-		while(it.hasNext())
+		for(int i = 0; i < approved.size(); i++)
 		{
-			Map.Entry<Album, Integer> pair = (Map.Entry<Album, Integer>)it.next();
-			target = pair.getKey();
-//			System.out.println("{{" + albumName + " | " + target.getName());
-			if(target.getName().equals(albumName))
+			if(approved.get(i).getName().equals(albumName))
 			{
-				return target;
-//				return isAlbumApproved(target, currentApprovalLevel);
+				return approved.get(i);
 			}
 		}
-		
 		return null;
 	}
 
@@ -150,7 +150,7 @@ public class Settings {
 
 	public void writeSettings() {
 		Gson gson = new Gson();
-		String json = gson.toJson(Settings.getInstance());
+		String json = gson.toJson(set);
 		try {
 			FileWriter writer = new FileWriter(tempFilePath);
 			writer.write(json);
@@ -164,7 +164,7 @@ public class Settings {
 
 	public Settings readSettings() {
 		Gson gson = new Gson();
-		String json = gson.toJson(Settings.getInstance());
+		//String json = gson.toJson(set);
 //		System.out.println("JSON = " + json);
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(tempFilePath));
@@ -178,9 +178,11 @@ public class Settings {
 		return set;
 
 	}
-	public void applySettings()
+	public void applySettings(ArrayList<Album> approve, String newurl, ArrayList<UserProfiles> profs)
 	{
-		
+		approved = approve;
+		url = newurl;
+		profiles = profs;
 	}
 	public String getURL()
 	{

@@ -57,7 +57,7 @@ public class MainWindow {
 	CardLayout cl = new CardLayout();
 	private JPasswordField passwordField;
 	private JTable albumTable;
-	private static SettingsWindow settingsWindow = null;
+	private SettingsWindow settingsWindow = null;
 	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 	
 	private JLabel lblAlbumTitle;
@@ -235,15 +235,8 @@ public class MainWindow {
 		JButton btnSettings = new JButton("Settings");
 		btnSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(settingsWindow == null)
-				{
-					settingsWindow = new SettingsWindow();
-					settingsWindow.main(null);					
-				}
-				else
-				{
-					settingsWindow.makeVisible();
-				}
+				settingsWindow = new SettingsWindow();
+				settingsWindow.main(null);
 			}
 		});
 		
@@ -516,6 +509,10 @@ public class MainWindow {
 		pnlUsers.add(pnlUserOne);
 		
 		JButton button = new JButton("");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		button.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Dog1.png")));
 		button.setOpaque(false);
 		button.setContentAreaFilled(false);

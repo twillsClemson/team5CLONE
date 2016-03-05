@@ -79,6 +79,16 @@ public class UserProfiles {
 	{
 		this.name = name;
 	}
+	
+	public void setPIN(int pin)
+	{
+		this.PIN = pin;
+	}
+	
+	public void setAdmin(boolean adm)
+	{
+		this.admin = adm;
+	}
 
 	public int getRestrictionLevel()
 	{
