@@ -748,25 +748,22 @@ public class MainWindow {
 		
 	}
 	
+	// When a new node is selected in the library tree,
+	// * Check to see if the selected node is an album.
+	//   - If the node is an album,
+	//      ~ Set the MainWindow selectedAlbum variable to the album with the same name
+	//      ~ If the album is not already in the user's faovirtes, enable the favorite button
+	//      ~ Add all songs in the album to the album table
+	//   - If the node is not an album,
+	//      ~ Disable the favorites button
+	// Returns an array of Strings
+	// * ret[0] = String containing new value for lblAlbumTitle
+	// * ret[1] = String containing new value for lblAlbumArtist
 	private String[] onLibraryTreeChange(String treeName)
 	{
 		resetAlbumTable();
 		String[] ret = {"Select an Album", ""};
 		
-//		for(Iterator<Entry<String, Album> > i = libraryAlbums.entrySet().iterator(); i.hasNext();)
-//		{
-//			Entry<String, Album> next = (Entry<String, Album>) i.next();
-//			
-//			System.out.println(next.getKey());
-//			for(Iterator<Song> j = next.getValue().getSongs().iterator(); j.hasNext();)
-//			{
-//				Song nextJ = j.next();
-//				System.out.println("  " + nextJ.getName() + " | " + nextJ.getLength() + " | " + nextJ.getURL());
-//			}
-//			System.out.println("]");
-//		}
-		
-//		System.out.println("Trying to select " + ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString());
 		Album album = libraryAlbums.get( treeName );
 		if(album != null)
 		{
@@ -793,9 +790,7 @@ public class MainWindow {
 				Song song = j.next();
 				Object[] row = new Object[]{ new Integer(counter++), song.getName(), song.getArtist(), song.getLength() };
 				addToAlbumTable(row);
-//				System.out.println("  " + nextJ.getName() + " | " + nextJ.getLength() + " | " + nextJ.getURL());
-			}
-			
+			}	
 		}
 		else
 		{
@@ -803,88 +798,5 @@ public class MainWindow {
 		}
 		
 		return ret;
-
-
-		
-//		DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-//		if (node == null)
-//		{
-//			trackURL = null;
-//		}
-//		else
-//		{
-//			Album album = libraryAlbums.get(node.toString());
-//			if(album != null)
-//			{
-//				
-//			}
-////			Object nodeInfo = node.getUserObject();
-//			if(node.isLeaf())
-//			{
-//				System.out.println("LEAF " + node + " | " + songURLs.get(node));
-//				
-//
-//			}
-//			else
-//			{
-//				System.out.println("NOT LEAF " + node);
-//				
-//				if(node.getChildAt(0).isLeaf())
-//				{
-//					for(int i = 0; i < node.getChildCount(); i++)
-//					{
-//						Object[] data = new Object[3];
-//						DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) node.getChildAt(i);
-//						
-//						data[0] = new Integer(i+1);
-//						data[1] = childNode.toString();
-//						data[2] = songURLs.get(childNode);
-//						
-//						if(data[2] == null || data[2].equals(""))
-//						{
-//							resetAlbumTable();
-//							break;
-//						}
-//						
-//						addToAlbumTable(data);
-//					}
-//				}
-//			}
-//		}
-		
 	}
-	
-	// Create JPanels that are used in each tab
-	
-	// REPLACED WITH createLibraryTemplate() AND createFavoritesTemplate()
-//	private JPanel createTemplate(String tabName)
-//	{
-//		JPanel template = new JPanel();
-//		template.setName(tabName);
-//		
-//		UIManager.put("Tree.rendererFillBackground", false);
-//		JTree tree = new JTree();
-//		
-//		tree.setBackground(null);
-//		tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode(tabName, Settings.getInstance().getURL())));
-//
-//		tree.setName(tabName + "Tree");
-//		GroupLayout gl_template = new GroupLayout(template);
-//		gl_template.setHorizontalGroup(
-//			gl_template.createParallelGroup(Alignment.LEADING)
-//				.addGroup(gl_template.createSequentialGroup()
-//					.addContainerGap()
-//					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
-//					.addContainerGap())
-//		);
-//		gl_template.setVerticalGroup(
-//			gl_template.createParallelGroup(Alignment.LEADING)
-//				.addGroup(gl_template.createSequentialGroup()
-//					.addContainerGap()
-//					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 574, Short.MAX_VALUE)
-//					.addContainerGap())
-//		);
-//		template.setLayout(gl_template);
-//		return template;
-//	}
 }
