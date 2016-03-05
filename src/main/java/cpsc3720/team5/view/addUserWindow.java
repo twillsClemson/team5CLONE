@@ -109,6 +109,7 @@ public class addUserWindow {
 				prof.setRestrictionLevel(Integer.valueOf(txtRestricionLevel.getText()));
 				prof.setPIN(Integer.valueOf(txtNewUserPIN.getText()));
 				prof.setAdmin(rdbtnAdministrator.isSelected());
+				prof.setProfilePicture(textField.getText());
 				setting.addUserProfile(prof);
 				frmNewUser.setVisible(false);
 				frmNewUser.dispose();

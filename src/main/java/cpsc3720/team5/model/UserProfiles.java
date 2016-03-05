@@ -89,6 +89,11 @@ public class UserProfiles {
 	{
 		this.admin = adm;
 	}
+	
+	public void setProfilePicture(String path)
+	{
+		this.profilePic = path;
+	}
 
 	public int getRestrictionLevel()
 	{
