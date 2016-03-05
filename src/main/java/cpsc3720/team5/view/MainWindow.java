@@ -668,11 +668,8 @@ public class MainWindow {
 			{
 				String[] info = onLibraryTreeChange(tree);
 				
-
 				lblAlbumTitle.setText(info[0]);
 				lblAlbumArtist.setText(info[1]);
-				
-				
 			}
 		});
 		
@@ -697,11 +694,17 @@ public class MainWindow {
 		return template;
 	}
 	
+	// Adds the specified album to the album table
+	// obj[0] = Track number
+	// obj[1] = Track name
+	// obj[2] = Artist
+	// obj[3] = Song duration
 	public void addToAlbumTable(Object[] obj)
 	{
 		((DefaultTableModel) albumTable.getModel()).addRow(obj);
 	}
 	
+	// Clears the album table of all entries, and resets the album title and artist labels
 	public void resetAlbumTable()
 	{
 		lblAlbumArtist.setText("");
@@ -714,6 +717,7 @@ public class MainWindow {
 		}
 	}
 	
+	// Downloads the selected library album, and adds it to the current user's favorites
 	public void onBtnFavoritesPress()
 	{
 		btnFavoriteAlbum.setEnabled(false);
@@ -723,29 +727,20 @@ public class MainWindow {
 		}
 		
 		currentUser.addFavorite(selectedAlbum);
-		
-		
 		ArrayList<Song> songs;
 		
-		try
+		songs = libraryAlbums.get(selectedAlbum.getName()).getSongs();
+		 
+		try 
 		{
-			 songs = libraryAlbums.get(selectedAlbum.getName()).getSongs();
-			 
-			 for(Iterator<Song> i = songs.iterator(); i.hasNext();)
-			 {
-				 Song next = (Song) i.next();						 
-				 Download.downloadTrack(next.getURL());
-			 }
-			 
-		} catch (NullPointerException ex)
+			for(Iterator<Song> i = songs.iterator(); i.hasNext();)
+			{
+				Song next = (Song) i.next();						 
+				Download.downloadTrack(next.getURL());
+			}
+		} catch (IOException e) 
 		{
-			ex.printStackTrace();
-			return;
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
+			currentUser.removeFavorite(selectedAlbum);
 		}
 		
 		System.out.println("Downloads complete.");
@@ -771,7 +766,7 @@ public class MainWindow {
 //			System.out.println("]");
 //		}
 		
-		System.out.println("Trying to select " + ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString());
+//		System.out.println("Trying to select " + ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString());
 		Album album = libraryAlbums.get( ((DefaultMutableTreeNode) tree.getLastSelectedPathComponent()).toString() );
 		if(album != null)
 		{

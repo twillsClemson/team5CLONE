@@ -43,6 +43,8 @@ public class Song
 		return URL.substring(index);
 	}
 	
+	
+	
 	public String getArtist()
 	{
 		return artist;

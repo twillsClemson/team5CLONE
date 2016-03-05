@@ -13,9 +13,8 @@ public class Download
 	private static final String downloadsFolder = "./temp/";
 	
 	// Saves track to local machine
-	public static void downloadTrack(String trackURL) throws IOException
+	public static void downloadTrack(String trackURL) throws IOException 
 	{
-	
 		if(trackExists(getFileName(trackURL)))
 		{
 			System.out.println("NOT Downloading [" + trackURL + "]");
@@ -25,26 +24,29 @@ public class Download
 		System.out.println("Downloading [" + trackURL + "]");
 			
 		File file = new File(downloadsFolder + getFileName(trackURL));
-		file.createNewFile();
+		InputStream input;
+		OutputStream output;
+		try 
+		{
+			file.createNewFile();
 
-		URL url = new java.net.URL(trackURL);
+			URL url = new java.net.URL(trackURL);
 
-		URLConnection urlConnect = url.openConnection();
-		byte[] buffer = new byte[8 * 1024];
+			URLConnection urlConnect = url.openConnection();
+			byte[] buffer = new byte[8 * 1024];
 
-		InputStream input = urlConnect.getInputStream();
-		try {
-			OutputStream output = new FileOutputStream(downloadsFolder + file.getName());
-			try {
-				int bytesRead;
-				while ((bytesRead = input.read(buffer)) != -1) {
-					output.write(buffer, 0, bytesRead);
-				}
-			} finally {
-				output.close();
+			input = urlConnect.getInputStream();
+			output = new FileOutputStream(downloadsFolder + file.getName());
+			int bytesRead;
+			while ((bytesRead = input.read(buffer)) != -1) {
+				output.write(buffer, 0, bytesRead);
 			}
-		} finally {
+			output.close();
 			input.close();
+			
+		} catch (IOException ex) {
+			file.delete();
+			throw ex;
 		}
 	}
 	
