@@ -30,12 +30,13 @@ public class CalculateTreeNode
 	
 	// Recursively generates the nodes to be used in the "Library" tab of the main window
 	// Filters any results that the current user does not have permissions for
-	static public DefaultMutableTreeNode calculateTreeNode(String name, String newServerURL, Map<String, Album> newAlbums, int newCurrentApprovalLevel)
+	static public DefaultMutableTreeNode calculateTreeNode(String name, String newServerURL, int newCurrentApprovalLevel)
 		throws IOException
 	{
 		serverURL = newServerURL;
 		currentApprovalLevel = newCurrentApprovalLevel;
-		albums = newAlbums;
+		albums = Settings.getInstance().getLibraryAlbums();
+//		albums = newAlbums;
 		DefaultMutableTreeNode node = calculateTreeNodeRecursive(name, "0");
 		return node;
 	}

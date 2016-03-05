@@ -1,6 +1,7 @@
 //package cpsc3720.team5.controller;
 //
 //import java.util.Iterator;
+//import java.util.Map;
 //
 //import cpsc3720.team5.model.Album;
 //import cpsc3720.team5.model.Song;
@@ -9,8 +10,10 @@
 //	
 //	public static boolean handleLibraryTreeChange(String[] names, Album album)
 //	{
+//		boolean ret;
 //		if(album != null)
 //		{
+//			Map<String, Album> libraryAlbums;
 //			
 //			names[0] = album.getName();
 //			
@@ -21,11 +24,13 @@
 //
 //			if(!currentUser.hasFavorite(album))
 //			{
-//				btnFavoriteAlbum.setEnabled(true);
+//				ret = true;
+////				btnFavoriteAlbum.setEnabled(true);
 //			}
 //			else
 //			{
-//				btnFavoriteAlbum.setEnabled(false);
+//				ret = false;
+////				btnFavoriteAlbum.setEnabled(false);
 //			}
 //			
 //			int counter = 1;
@@ -40,9 +45,11 @@
 //		}
 //		else
 //		{
+//			ret = false;
 //			btnFavoriteAlbum.setEnabled(false);
 //		}
 //		
+//		return ret;
 //	}
 //
 //}

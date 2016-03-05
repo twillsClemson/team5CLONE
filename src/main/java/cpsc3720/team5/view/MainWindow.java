@@ -48,7 +48,6 @@ import java.util.Map.Entry;
 public class MainWindow {
 	
 	private Album selectedAlbum = null;
-	private UserProfiles currentUser = null;
 
 	JFrame frameMain = new JFrame("Media Player Login");
 	JPanel panelControl = new JPanel();
@@ -76,7 +75,7 @@ public class MainWindow {
 	
 	JButton restrictButton = new JButton("Restrict Album");
 	
-	private Map<String, Album> libraryAlbums = new HashMap<String, Album>();
+	
 
 	/**
 	 * Launch the application.
@@ -261,6 +260,9 @@ public class MainWindow {
 				// Remove the library tab (to be recreated when a new user logs in)
 				tabbedPane.remove(1);
 				tabbedPane.remove(0);
+				
+				// Clear library albums
+				Settings.getInstance().getLibraryAlbums().clear();
 			}
 		});
 		JButton btnSettings = new JButton("Settings");
@@ -549,12 +551,20 @@ public class MainWindow {
 			// Load settings for individual user should go here (setting the currentUser variable in the process)
 			// But for now, default some things (Please delete/rewrite between these slashes when you have something functional
 			/////////////////////
-			currentUser = new UserProfiles();
+
+			// Resolve currentUser
+			UserProfiles currentUser = new UserProfiles();
 			currentUser.setName("John Smith");
 			currentUser.setRestrictionLevel(2);
 			
+			// Remember currentUser
+			Settings.getInstance().setCurrentUser(currentUser);
+			
+			// Resolve approved albums and favorite albums
 			Album album = new Album("Album A");
 			Settings.getInstance().addApprovedAlbum(album, 1);
+			
+			Map<String, Album> libraryAlbums = Settings.getInstance().getLibraryAlbums();
 			libraryAlbums.put(album.getName(), album);
 			album = new Album("Album B");
 			Settings.getInstance().addApprovedAlbum(album, 3);
@@ -563,14 +573,11 @@ public class MainWindow {
 			Settings.getInstance().addApprovedAlbum(album, 3);
 			libraryAlbums.put(album.getName(), album);
 			
-//			Settings.getInstance().addApprovedAlbum(new Album("Album A"), 1);
-//			Settings.getInstance().addApprovedAlbum(new Album("Album B"), 3);
-//			Settings.getInstance().addApprovedAlbum(new Album("Album C"), 3);
-			
 			
 			currentUser.addFavorite(Settings.getInstance().getAlbum("Album A"));
 			/////////////////////
 			
+			// Calculated in this order because createLibraryTemplate() generates albums
 			Component compLibrary = createLibraryTemplate();
 			tabbedPane.addTab("Favorites", createFavoritesTemplate());
 			tabbedPane.addTab("Library", compLibrary);
@@ -596,7 +603,7 @@ public class MainWindow {
 		
 		treeFavLib.setBackground(null);
 		treeFavLib.setModel(new DefaultTreeModel( 
-				CalculateTreeNode.calculateFavoritesTreeNode(currentUser.getFavorites())));
+				CalculateTreeNode.calculateFavoritesTreeNode(Settings.getInstance().getCurrentUser().getFavorites())));
 //				new DefaultMutableTreeNode(tabName)
 //				{
 //					{
@@ -644,7 +651,8 @@ public class MainWindow {
 		tree.setBackground(null);
 		try
 		{
-			tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode("Library", Settings.getInstance().getURL(), libraryAlbums, currentUser.getRestrictionLevel())));
+			tree.setModel(new DefaultTreeModel(CalculateTreeNode.calculateTreeNode("Library", Settings.getInstance().getURL(),
+					Settings.getInstance().getCurrentUser().getRestrictionLevel())));
 		} catch(IOException ex)
 		{
 			tree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("No compatible server found")));
@@ -721,15 +729,16 @@ public class MainWindow {
 	public void onBtnFavoritesPress()
 	{
 		btnFavoriteAlbum.setEnabled(false);
+		UserProfiles currentUser = Settings.getInstance().getCurrentUser();
+		
 		if(currentUser.hasFavorite(selectedAlbum))
 		{
 			return;
 		}
-		
 		currentUser.addFavorite(selectedAlbum);
 		ArrayList<Song> songs;
 		
-		songs = libraryAlbums.get(selectedAlbum.getName()).getSongs();
+		songs = Settings.getInstance().getLibraryAlbums().get(selectedAlbum.getName()).getSongs();
 		 
 		try 
 		{
@@ -741,9 +750,8 @@ public class MainWindow {
 		} catch (IOException e) 
 		{
 			currentUser.removeFavorite(selectedAlbum);
+			btnFavoriteAlbum.setEnabled(true);
 		}
-		
-		System.out.println("Downloads complete.");
 		return;
 		
 	}
@@ -764,7 +772,7 @@ public class MainWindow {
 		resetAlbumTable();
 		String[] ret = {"Select an Album", ""};
 		
-		Album album = libraryAlbums.get( treeName );
+		Album album = Settings.getInstance().getLibraryAlbums().get( treeName );
 		if(album != null)
 		{
 			selectedAlbum = album;
@@ -775,7 +783,7 @@ public class MainWindow {
 				ret[1] = album.getSongs().get(0).getArtist();
 			}
 
-			if(!currentUser.hasFavorite(album))
+			if(!Settings.getInstance().getCurrentUser().hasFavorite(album))
 			{
 				btnFavoriteAlbum.setEnabled(true);
 			}

@@ -21,6 +21,10 @@ public class Settings {
 	private String url = null;
 	public static final String tempFilePath = "./temp/Settings.json";
 	public static final String defaultURL = "http://127.0.0.1:5001/upnp/control/content_directory";
+	
+	private Map<String, Album> libraryAlbums = new HashMap<String, Album>();
+	
+	private UserProfiles currentUser = null;
 
 
 	private Settings() {
@@ -28,6 +32,21 @@ public class Settings {
 
 		approved = new HashMap<Album, Integer>();
 		url = defaultURL;
+	}
+	
+	public Map<String, Album> getLibraryAlbums()
+	{
+		return libraryAlbums;
+	}
+	
+	public void setCurrentUser(UserProfiles user)
+	{
+		currentUser = user;
+	}
+	
+	public UserProfiles getCurrentUser()
+	{
+		return currentUser;
 	}
 	
 	public Map<Album, Integer> getApproved()
