@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.GroupLayout.Alignment;
@@ -69,6 +71,7 @@ public class MainWindow {
 	JButton btnSettings;
 	private JLabel lblAlbumTitle;
 	private JLabel lblAlbumArtist;
+	private JLabel lblSongName;
 	
 	JTabbedPane tabbedPane;
 //	private Map<DefaultMutableTreeNode, String> songURLs;
@@ -346,6 +349,42 @@ public class MainWindow {
 			}
 		));
 		
+		MouseListener listener = new MouseListener(){
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				lblSongName.setText(albumTable.getValueAt(albumTable.getSelectedRow(),1).toString());
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
+		
+		albumTable.addMouseListener(listener);
+		
 		TableColumn trackNumber = albumTable.getColumnModel().getColumn(0);
 		trackNumber.setPreferredWidth(50);
 		trackNumber.setCellRenderer(centerRenderer);
@@ -446,7 +485,10 @@ public class MainWindow {
 			}
 		});
 		
-		JLabel lblSongName = new JLabel("Song Name - Album Name");
+		lblSongName = new JLabel("Song Name - Album Name");
+		if(selectedSong != null) {
+			lblSongName.setText(selectedSong.getName());
+		}
 		lblSongName.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
 		JToggleButton tglbtnPlayPause = new JToggleButton("");
@@ -760,6 +802,8 @@ public class MainWindow {
 	{
 		lblAlbumArtist.setText("");
 		lblAlbumTitle.setText("Select an Album");
+		lblSongName.setText("");
+		
 		DefaultTableModel model = ((DefaultTableModel) albumTable.getModel());
 		
 		while(model.getRowCount() > 0)

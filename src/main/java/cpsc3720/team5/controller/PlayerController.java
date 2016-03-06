@@ -42,6 +42,7 @@ public class PlayerController {
 
 					player.start();
 
+					
 					//System.out.println("Clip length: " + player.getDuration().getSeconds() + " seconds");
 					//System.out.print("Press enter to stop playing...");
 
