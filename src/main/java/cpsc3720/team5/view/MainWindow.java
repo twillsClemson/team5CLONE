@@ -66,7 +66,7 @@ public class MainWindow {
 	private JTable albumTable;
 	private SettingsWindow settingsWindow = null;
 	DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-	
+	JButton btnSettings;
 	private JLabel lblAlbumTitle;
 	private JLabel lblAlbumArtist;
 	
@@ -234,7 +234,8 @@ public class MainWindow {
 				Settings.getInstance().getLibraryAlbums().clear();
 			}
 		});
-		JButton btnSettings = new JButton("Settings");
+		
+		btnSettings = new JButton("Settings");
 		btnSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				settingsWindow = new SettingsWindow();
@@ -616,6 +617,11 @@ public class MainWindow {
 				Component compLibrary = createLibraryTemplate();
 				tabbedPane.addTab("Favorites", createFavoritesTemplate());
 				tabbedPane.addTab("Library", compLibrary);
+				
+				if(loginUser.getAdmin() == false)
+				{
+					btnSettings.setVisible(false);
+				}
 
 				cl.show(panelControl, "2");	   				
 			}
@@ -626,46 +632,6 @@ public class MainWindow {
 				JOptionPane.showMessageDialog(null, "Incorrect PIN entered! Please try again.", "Error Message", JOptionPane.INFORMATION_MESSAGE);	
 			}
 			
-			
-			
-			
-			// Load settings for individual user should go here (setting the currentUser variable in the process)
-			// But for now, default some things (Please delete/rewrite between these slashes when you have something functional
-			/////////////////////
-			
-			/*
-
-			// Resolve currentUser
-			UserProfiles currentUser = new UserProfiles();
-			currentUser.setName("John Smith");
-			currentUser.setRestrictionLevel(5);
-			
-			// Remember currentUser
-			Settings.getInstance().setCurrentUser(currentUser);
-			
-			// Resolve approved albums and favorite albums
-			Album album = new Album("Album A");
-			Settings.getInstance().addApprovedAlbum(album, 1);
-			
-			Map<String, Album> libraryAlbums = Settings.getInstance().getLibraryAlbums();
-			libraryAlbums.put(album.getName(), album);
-			album = new Album("Album B");
-			Settings.getInstance().addApprovedAlbum(album, 3);
-			libraryAlbums.put(album.getName(), album);
-			album = new Album("Album C");
-			Settings.getInstance().addApprovedAlbum(album, 3);
-			libraryAlbums.put(album.getName(), album);
-			
-			
-			currentUser.addFavorite(Settings.getInstance().getAlbum("Album A"));
-			/////////////////////
-			
-			// Calculated in this order because createLibraryTemplate() generates albums
-			Component compLibrary = createLibraryTemplate();
-			tabbedPane.addTab("Favorites", createFavoritesTemplate());
-			tabbedPane.addTab("Library", compLibrary);
-			
-			*/ 
 		}
 	}
 	
