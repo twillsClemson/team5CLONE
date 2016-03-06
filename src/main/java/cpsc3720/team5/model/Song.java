@@ -42,7 +42,7 @@ public class Song
 		int index = URL.lastIndexOf("/") + 1;
 		
 		String tempString = new String(URL.substring(index));
-		tempString.replaceAll("+", " ");
+		tempString = tempString.replaceAll("\\+", " ");
 
 			
 		return tempString;
