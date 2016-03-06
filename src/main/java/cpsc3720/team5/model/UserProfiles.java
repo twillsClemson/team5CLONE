@@ -119,5 +119,14 @@ public class UserProfiles {
 	{
 		return this.profilePic;
 	}
+	
+	public boolean validatePIN(int inputPIN)
+	{
+		if(PIN == inputPIN)
+		{
+			return true;
+		}
+		return false;
+	}
 
 }

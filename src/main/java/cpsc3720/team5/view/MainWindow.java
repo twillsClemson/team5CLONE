@@ -49,6 +49,7 @@ public class MainWindow {
 	
 	private Album selectedAlbum = null;
 	private ArrayList<UserProfiles> profiles = null;
+	private ButtonGroup userRadioButtons;
 
 	JFrame frameMain = new JFrame("Media Player Login");
 	JPanel panelControl = new JPanel();
@@ -62,7 +63,6 @@ public class MainWindow {
 	
 	private JLabel lblAlbumTitle;
 	private JLabel lblAlbumArtist;
-
 	
 	JTabbedPane tabbedPane;
 //	private Map<DefaultMutableTreeNode, String> songURLs;
@@ -146,14 +146,11 @@ public class MainWindow {
 		
 		JLabel lblMediaPlayer = new JLabel("Media Player");
 		lblMediaPlayer.setFont(new Font("Tahoma", Font.BOLD, 46));
-		
-		JLabel lblTestlable = new JLabel("testlable");
 		int count = 0;
 		for(int i = 0; i < profiles.size(); i++)
 		{
 			count += 1;
 		}
-		lblTestlable.setText(Integer.toString(count));
 		
 		GroupLayout gl_loginPanel = new GroupLayout(loginPanel);
 		gl_loginPanel.setHorizontalGroup(
@@ -166,16 +163,14 @@ public class MainWindow {
 					.addGap(358)
 					.addComponent(lblMediaPlayer)
 					.addContainerGap(339, Short.MAX_VALUE))
-				.addGroup(gl_loginPanel.createSequentialGroup()
+				.addGroup(Alignment.LEADING, gl_loginPanel.createSequentialGroup()
 					.addGap(350)
 					.addComponent(lblEnterPin)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(txtfldPIN, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(btnLogin, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE)
-					.addGap(132)
-					.addComponent(lblTestlable)
-					.addContainerGap(214, Short.MAX_VALUE))
+					.addContainerGap(352, Short.MAX_VALUE))
 		);
 		gl_loginPanel.setVerticalGroup(
 			gl_loginPanel.createParallelGroup(Alignment.TRAILING)
@@ -184,16 +179,11 @@ public class MainWindow {
 					.addComponent(lblMediaPlayer)
 					.addGap(32)
 					.addComponent(scrollPaneUserProfiles, GroupLayout.PREFERRED_SIZE, 340, GroupLayout.PREFERRED_SIZE)
-					.addGroup(gl_loginPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_loginPanel.createSequentialGroup()
-							.addGap(94)
-							.addGroup(gl_loginPanel.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lblEnterPin)
-								.addComponent(txtfldPIN, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(btnLogin)))
-						.addGroup(gl_loginPanel.createSequentialGroup()
-							.addGap(91)
-							.addComponent(lblTestlable)))
+					.addGap(94)
+					.addGroup(gl_loginPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblEnterPin)
+						.addComponent(txtfldPIN, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnLogin))
 					.addGap(124))
 		);
 		
@@ -510,7 +500,7 @@ public class MainWindow {
 	// Populates users on the main login page to be selected and logged into
 	private void populateUserImages(JPanel pnlUsers)
 	{
-        ButtonGroup userRadioButtons = new ButtonGroup();
+        userRadioButtons = new ButtonGroup();
         
 		for(int i = 0; i < profiles.size(); i++)
 		{
@@ -526,6 +516,7 @@ public class MainWindow {
 			btnIconUserOne.setBorderPainted(false);
 			
 			JRadioButton rdbtnUserOne = new JRadioButton(user.getName());
+			rdbtnUserOne.setActionCommand(user.getName());
 			rdbtnUserOne.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			GroupLayout gl_pnlUserOne = new GroupLayout(pnlUserOne);
 			gl_pnlUserOne.setHorizontalGroup(
@@ -557,14 +548,73 @@ public class MainWindow {
 	
 	private void checkPassword()
 	{
-		if(txtfldPIN.getText().length() == 4 && !txtfldPIN.getText().equals("0000"))
+		ButtonModel model = userRadioButtons.getSelection();
+		
+		if(model == null)
 		{
 			txtfldPIN.setText("");
-			frameMain.setTitle("Media Player");
+			JOptionPane.showMessageDialog(null, "No user selected! Please select a user and try again.", "Error Message", JOptionPane.INFORMATION_MESSAGE);	
+			return;
+		}
+		
+		String username = model.getActionCommand();		
+		UserProfiles loginUser = Settings.getInstance().getProfileByName(username);
+		
+		if(txtfldPIN.getText().length() != 4)
+		{
+			txtfldPIN.setText("");
+			JOptionPane.showMessageDialog(null, "Invalid PIN entered! PINs must be 4 characters. Please try again.", "Error Message", JOptionPane.INFORMATION_MESSAGE);			
+		}
+		
+		else
+		{		
+			if(loginUser.validatePIN(Integer.parseInt(txtfldPIN.getText())))
+			{
+				// Login user
+				txtfldPIN.setText("");
+				frameMain.setTitle("Media Player");
+				
+				Settings.getInstance().setCurrentUser(loginUser);
+				
+				// Resolve approved albums and favorite albums
+				Album album = new Album("Album A");
+				Settings.getInstance().addApprovedAlbum(album, 1);
+				
+				Map<String, Album> libraryAlbums = Settings.getInstance().getLibraryAlbums();
+				libraryAlbums.put(album.getName(), album);
+				album = new Album("Album B");
+				Settings.getInstance().addApprovedAlbum(album, 3);
+				libraryAlbums.put(album.getName(), album);
+				album = new Album("Album C");
+				Settings.getInstance().addApprovedAlbum(album, 3);
+				libraryAlbums.put(album.getName(), album);
+				
+				
+				loginUser.addFavorite(Settings.getInstance().getAlbum("Album A"));
+				/////////////////////
+				
+				// Calculated in this order because createLibraryTemplate() generates albums
+				Component compLibrary = createLibraryTemplate();
+				tabbedPane.addTab("Favorites", createFavoritesTemplate());
+				tabbedPane.addTab("Library", compLibrary);
+
+				cl.show(panelControl, "2");	   				
+			}
+			
+			else
+			{
+				txtfldPIN.setText("");
+				JOptionPane.showMessageDialog(null, "Incorrect PIN entered! Please try again.", "Error Message", JOptionPane.INFORMATION_MESSAGE);	
+			}
+			
+			
+			
 			
 			// Load settings for individual user should go here (setting the currentUser variable in the process)
 			// But for now, default some things (Please delete/rewrite between these slashes when you have something functional
 			/////////////////////
+			
+			/*
 
 			// Resolve currentUser
 			UserProfiles currentUser = new UserProfiles();
@@ -596,13 +646,7 @@ public class MainWindow {
 			tabbedPane.addTab("Favorites", createFavoritesTemplate());
 			tabbedPane.addTab("Library", compLibrary);
 			
-			
-			cl.show(panelControl, "2");
-		}
-		else
-		{
-			txtfldPIN.setText("");
-			JOptionPane.showMessageDialog(null, "Incorrect PIN entered! Please try again.", "Error Message", JOptionPane.INFORMATION_MESSAGE);				    
+			*/ 
 		}
 	}
 	

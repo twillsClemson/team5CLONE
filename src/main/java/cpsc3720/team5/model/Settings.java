@@ -38,6 +38,19 @@ public class Settings {
 	{
 		return libraryAlbums;
 	}
+
+	public UserProfiles getProfileByName(String name)
+	{
+		UserProfiles user = null;
+		for(int i = 0; i < profiles.size(); i++)
+		{
+			if(profiles.get(i).getName().compareTo(name) == 0)
+			{
+				user = profiles.get(i);
+			}
+		}
+		return user;
+	}
 	
 	public void setCurrentUser(UserProfiles user)
 	{
