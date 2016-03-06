@@ -75,7 +75,7 @@ public class SettingsWindow {
 		//frame.setPreferredSize(new Dimension(500, 300));
 		//frame.setMaximumSize(new Dimension(500, 300));
 		frame.setVisible(true);
-		frame.setSize(new Dimension(600, 301));
+		frame.setSize(new Dimension(754, 301));
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		
@@ -116,22 +116,20 @@ public class SettingsWindow {
 		groupLayout_1.setHorizontalGroup(
 			groupLayout_1.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout_1.createSequentialGroup()
-					.addGroup(groupLayout_1.createParallelGroup(Alignment.LEADING)
+					.addContainerGap()
+					.addComponent(btnApplyChanges_1)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnUndoChanges_1)
+					.addContainerGap(345, Short.MAX_VALUE))
+				.addGroup(groupLayout_1.createSequentialGroup()
+					.addGap(12)
+					.addGroup(groupLayout_1.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(lblRestrictedAlbums)
 						.addGroup(groupLayout_1.createSequentialGroup()
-							.addGap(12)
-							.addGroup(groupLayout_1.createParallelGroup(Alignment.LEADING, false)
-								.addComponent(lblRestrictedAlbums)
-								.addGroup(groupLayout_1.createSequentialGroup()
-									.addComponent(lblServerUrl, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(txtDefaultUrl, GroupLayout.PREFERRED_SIZE, 219, GroupLayout.PREFERRED_SIZE))
-								.addComponent(scrollPane_1, 0, 0, Short.MAX_VALUE)))
-						.addGroup(groupLayout_1.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(groupLayout_1.createSequentialGroup()
-								.addComponent(btnApplyChanges_1)
-								.addPreferredGap(ComponentPlacement.RELATED))
-							.addComponent(btnUndoChanges_1)))
+							.addComponent(lblServerUrl, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(txtDefaultUrl, GroupLayout.PREFERRED_SIZE, 219, GroupLayout.PREFERRED_SIZE))
+						.addComponent(scrollPane_1, 0, 0, Short.MAX_VALUE))
 					.addContainerGap(252, Short.MAX_VALUE))
 		);
 		groupLayout_1.setVerticalGroup(
@@ -166,11 +164,12 @@ public class SettingsWindow {
 		                	return true;
 					}
 				};
-		ArrayList<Album> albums = setting.getApproved();
-		Object[][] albumLst = new Object[setting.getApproved().size()][1];
-		for(int i = 0; i < setting.getApproved().size(); i++)
+		Map<String, Album> albums = setting.getLibraryAlbums();
+		Object[][] albumLst = new Object[setting.getLibraryAlbums().size()][1];
+		int i = 0;
+		for(Entry<String, Album> al : albums.entrySet())
 		{
-			albumLst[i] = new Object[] {albums.get(i).name, albums.get(i).approvalLevel};
+			albumLst[i] = new Object[] {al.getValue().name, al.getValue().approvalLevel};
 			i++;
 		}
 		table_1.setModel(new DefaultTableModel(albumLst,
@@ -231,20 +230,73 @@ public class SettingsWindow {
 					newUserWindow.main(null);
 			}
 		});
+		
+		JButton btnUpdateTable = new JButton("Update User Table");
+		btnUpdateTable.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ArrayList<UserProfiles> profs  = setting.getProfiles();
+				Object[][] profLst = new Object[profs.size()][1];
+				int i = 0;
+				for(UserProfiles prof : profs)
+				{
+					profLst[i] = new Object[] {prof.getName(),prof.getPIN(), prof.getAdmin(), prof.getRestrictionLevel(), prof.getProfilePic()};
+					i++;
+				}
+				table.setModel(new DefaultTableModel(
+						profLst,
+						new String[] {
+							"User Name", "PIN", "User Type", "Restriction Level", "Profile Picture"
+						}
+					));
+			}
+		});
+		
+		JButton btnDeleteUser = new JButton("Delete User");
+		btnDeleteUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int index = table.getSelectedRow();
+				String name = (String)table.getModel().getValueAt(index, 0);
+				for(int i = 0; i < setting.getProfiles().size(); i++)
+				{
+					if(setting.getProfiles().get(i).getName().equals(name))
+					{
+						setting.getProfiles().remove(setting.getProfiles().get(i));
+					}
+				}
+				ArrayList<UserProfiles> profs  = setting.getProfiles();
+				Object[][] profLst = new Object[profs.size()][1];
+				int i = 0;
+				for(UserProfiles prof : profs)
+				{
+					profLst[i] = new Object[] {prof.getName(),prof.getPIN(), prof.getAdmin(), prof.getRestrictionLevel(), prof.getProfilePic()};
+					i++;
+				}
+				table.setModel(new DefaultTableModel(
+						profLst,
+						new String[] {
+							"User Name", "PIN", "User Type", "Restriction Level", "Profile Picture"
+						}
+					));
+			}
+		});
 		GroupLayout gl_panel_1 = new GroupLayout(panel_1);
 		gl_panel_1.setHorizontalGroup(
 			gl_panel_1.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panel_1.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, gl_panel_1.createSequentialGroup()
+					.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
+						.addGroup(gl_panel_1.createSequentialGroup()
 							.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
 							.addContainerGap())
 						.addGroup(gl_panel_1.createSequentialGroup()
 							.addComponent(btnApplyChanges)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnUndoChanges)
-							.addPreferredGap(ComponentPlacement.RELATED, 225, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
+							.addComponent(btnDeleteUser)
+							.addGap(18)
+							.addComponent(btnUpdateTable)
+							.addGap(18)
 							.addComponent(btnCreateNewUser)
 							.addGap(31))))
 		);
@@ -257,13 +309,15 @@ public class SettingsWindow {
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnApplyChanges)
 						.addComponent(btnUndoChanges)
-						.addComponent(btnCreateNewUser))
+						.addComponent(btnCreateNewUser)
+						.addComponent(btnUpdateTable)
+						.addComponent(btnDeleteUser))
 					.addContainerGap())
 		);
 		table = new JTable();
 		ArrayList<UserProfiles> profs  = setting.getProfiles();
 		Object[][] profLst = new Object[profs.size()][1];
-		int i = 0;
+		i = 0;
 		for(UserProfiles prof : profs)
 		{
 			profLst[i] = new Object[] {prof.getName(),prof.getPIN(), prof.getAdmin(), prof.getRestrictionLevel(), prof.getProfilePic()};
@@ -286,16 +340,14 @@ public class SettingsWindow {
 		btnApplyChanges_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ArrayList<Album> approve = new ArrayList<Album>();
+				Map<String, Album> lib = setting.getLibraryAlbums();
 				Album al = null;
 				for(int i = 1; i < table_1.getRowCount(); i++)
 				{
 					al = new Album();
-					if(table_1.getModel().getValueAt(i, 0) != null)
-					{
-						al = setting.getAlbum((String)table_1.getModel().getValueAt(i, 0));
-						al.setApprovalLevel((int)table_1.getModel().getValueAt(i, 1));
-						approve.add(al);
-					}
+					al = lib.get(((String)table_1.getModel().getValueAt(i, 0)));
+					al.setApprovalLevel((int)table_1.getModel().getValueAt(i, 1));
+					approve.add(al);
 				}
 				ArrayList<UserProfiles> profs = new ArrayList<UserProfiles>();
 				UserProfiles temp = null;
