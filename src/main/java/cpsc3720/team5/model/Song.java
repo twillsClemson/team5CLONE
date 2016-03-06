@@ -40,7 +40,12 @@ public class Song
 	public String getFileName()
 	{
 		int index = URL.lastIndexOf("/") + 1;
-		return URL.substring(index);
+		
+		String tempString = new String(URL.substring(index));
+		tempString.replaceAll("+", " ");
+
+			
+		return tempString;
 	}
 	
 	

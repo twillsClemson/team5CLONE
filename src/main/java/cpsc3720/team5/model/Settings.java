@@ -27,6 +27,7 @@ public class Settings {
 	private UserProfiles currentUser = null;
 
 
+
 	private Settings() {
 		profiles = new ArrayList<UserProfiles>();
 

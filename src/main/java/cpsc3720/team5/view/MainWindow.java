@@ -597,6 +597,7 @@ public class MainWindow {
 				Settings.getInstance().setCurrentUser(loginUser);
 				
 				// Resolve approved albums and favorite albums
+				
 				Album album = new Album("Album A");
 				Settings.getInstance().addApprovedAlbum(album, 1);
 				
@@ -610,7 +611,8 @@ public class MainWindow {
 				libraryAlbums.put(album.getName(), album);
 				
 				
-				loginUser.addFavorite(Settings.getInstance().getAlbum("Album A"));
+				loginUser.addFavorite(Settings.getInstance().getAlbum("Album C"));
+				
 				/////////////////////
 				
 				// Calculated in this order because createLibraryTemplate() generates albums
@@ -642,12 +644,24 @@ public class MainWindow {
 		pnlTreePanel.setName("Favorites");
 		
 		UIManager.put("Tree.rendererFillBackground", false);
-		JTree treeFavLib = new JTree();
+		
+		//Unsure if this should be final
+		final JTree treeFavLib = new JTree();
 		
 		treeFavLib.setBackground(null);
 		treeFavLib.setModel(new DefaultTreeModel( 
 				TreeNodeController.calculateFavoritesTreeNode(Settings.getInstance().getCurrentUser().getFavorites())));
 
+		treeFavLib.addTreeSelectionListener(new TreeSelectionListener()
+		{
+			public void valueChanged(TreeSelectionEvent e)
+			{
+				String[] info = onLibraryTreeChange(((DefaultMutableTreeNode) treeFavLib.getLastSelectedPathComponent()).toString());
+				
+				lblAlbumTitle.setText(info[0]);
+				lblAlbumArtist.setText(info[1]);
+			}
+		});
 		treeFavLib.setName("Favorites" + "Tree");
 		GroupLayout gl_pnlTreePanel = new GroupLayout(pnlTreePanel);
 		gl_pnlTreePanel.setHorizontalGroup(
@@ -836,4 +850,53 @@ public class MainWindow {
 		
 		return ret;
 	}
+
+	private String[] onFavoritesTreeChange(String treeName)
+	{
+		resetAlbumTable();
+		String[] ret = {"Select an Album", ""};
+		
+		Album album = null;
+		for(int i = 0;i < Settings.getInstance().getCurrentUser().getFavorites().size(); i++) {
+			if (Settings.getInstance().getCurrentUser().getFavorites().get(i).getName().equals(treeName)) {
+				album = Settings.getInstance().getCurrentUser().getFavorites().get(i);
+			}
+			
+		}
+
+		if(album != null)
+		{
+			selectedAlbum = album;
+			ret[0] = album.getName();
+			
+			if(album.getSongs().size() != 0)
+			{
+				ret[1] = album.getSongs().get(0).getArtist();
+			}
+
+			if(!Settings.getInstance().getCurrentUser().hasFavorite(album))
+			{
+				btnFavoriteAlbum.setEnabled(true);
+			}
+			else
+			{
+				btnFavoriteAlbum.setEnabled(false);
+			}
+			
+			int counter = 1;
+			for(Iterator<Song> j = album.getSongs().iterator(); j.hasNext();)
+			{
+				Song song = j.next();
+				Object[] row = new Object[]{ new Integer(counter++), song.getName(), song.getArtist(), song.getLength() };
+				addToAlbumTable(row);
+			}	
+		}
+		else
+		{
+			btnFavoriteAlbum.setEnabled(false);
+		}
+		
+		return ret;
+	}
+	
 }

@@ -24,6 +24,7 @@ public class PlayerController {
 
 			@Override
 			protected Void doInBackground() throws Exception {
+				System.out.println(MainWindow.selectedSong.getFileName());
 				File file = new File(MainWindow.selectedSong.getFileName());
 
 				Format input1 = new AudioFormat(AudioFormat.MPEGLAYER3);
