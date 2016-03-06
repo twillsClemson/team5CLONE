@@ -438,6 +438,13 @@ public class MainWindow {
 		icon = new ImageIcon(MainWindow.class.getResource("/icons/Stop.png"));
 		btnStop.setIcon(new ImageIcon(icon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH)));
 		
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+						PlayerController.stopSong();
+			}
+		});
+		
 		JLabel lblSongName = new JLabel("Song Name - Album Name");
 		lblSongName.setFont(new Font("Tahoma", Font.BOLD, 16));
 		
@@ -447,13 +454,15 @@ public class MainWindow {
 		
 		tglbtnPlayPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				selectedSong = selectedAlbum.getSong((String) albumTable.getValueAt(albumTable.getSelectedRow(), 1));
-				if(playPauseSelected) {
-					playPauseSelected = true;
-						PlayerController.playSong();
-				} else {
-					playPauseSelected = false;
-						PlayerController.pauseSong(selectedSong);
+				if(albumTable.getSelectedRow() != -1) {
+					selectedSong = selectedAlbum.getSong((String) albumTable.getValueAt(albumTable.getSelectedRow(), 1));
+					if(!playPauseSelected) {
+						playPauseSelected = true;
+							PlayerController.playSong();
+					} else {
+						playPauseSelected = false;
+							PlayerController.pauseSong();
+					}
 				}
 			}
 		});
