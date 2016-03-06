@@ -2,6 +2,9 @@ package cpsc3720.team5.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import cpsc3720.team5.controller.DownloadController;
 
 public class Album {
 	public String name;
@@ -51,5 +54,11 @@ public class Album {
 		this.approvalLevel = approvalLevel;
 	}
 	
-	
+	public Song getSong(String songName) {
+		int i = 0;
+		while (songs.get(i).getName() != songName && i < songs.size()) {
+			i++;
+		}
+		return songs.get(i);
+	}
 }

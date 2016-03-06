@@ -1,6 +1,7 @@
 package cpsc3720.team5.view;
 
 import javax.imageio.ImageIO;
+import javax.media.Time;
 import javax.swing.*;
 
 import java.awt.*;
@@ -47,10 +48,15 @@ import java.util.Map.Entry;
 
 public class MainWindow {
 	
+	static public Time mediaTime = new Time(0.0);
+	static public Song selectedSong = null;
 	private Album selectedAlbum = null;
 	private ArrayList<UserProfiles> profiles = null;
 	private ButtonGroup userRadioButtons;
 
+	
+	boolean playPauseSelected = false;
+	boolean stopSelected = false;
 	JFrame frameMain = new JFrame("Media Player Login");
 	JPanel panelControl = new JPanel();
 	JPanel loginPanel = new JPanel();
@@ -421,22 +427,10 @@ public class MainWindow {
 		JLabel lblSongDuration = new JLabel("1:00");
 		lblSongDuration.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
-
-		
-		JButton btnPause = new JButton("");
-//		btnPause.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Pause.png")));
-		btnPause.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		
 		icon = new ImageIcon(MainWindow.class.getResource("/icons/Pause.png"));
-		btnPause.setIcon(new ImageIcon(icon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH)));
-		
-		JButton btnPlay = new JButton("");
-//		btnPlay.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Play.png")));
-		btnPlay.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		
 		icon = new ImageIcon(MainWindow.class.getResource("/icons/play.png"));
-		btnPlay.setIcon(new ImageIcon(icon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH)));
-		
+
 		JButton btnStop = new JButton("");
 //		btnStop.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Stop.png")));
 		btnStop.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -446,6 +440,24 @@ public class MainWindow {
 		
 		JLabel lblSongName = new JLabel("Song Name - Album Name");
 		lblSongName.setFont(new Font("Tahoma", Font.BOLD, 16));
+		
+		JToggleButton tglbtnPlayPause = new JToggleButton("");
+		tglbtnPlayPause.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/Play.png")));
+		tglbtnPlayPause.setSelectedIcon(new ImageIcon(MainWindow.class.getResource("/icons/Pause.png")));
+		
+		tglbtnPlayPause.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				selectedSong = selectedAlbum.getSong((String) albumTable.getValueAt(albumTable.getSelectedRow(), 1));
+				if(playPauseSelected) {
+					playPauseSelected = true;
+						PlayerController.playSong();
+				} else {
+					playPauseSelected = false;
+						PlayerController.pauseSong(selectedSong);
+				}
+			}
+		});
+		
 		GroupLayout gl_pnlPlayControl = new GroupLayout(pnlPlayControl);
 		gl_pnlPlayControl.setHorizontalGroup(
 			gl_pnlPlayControl.createParallelGroup(Alignment.LEADING)
@@ -455,18 +467,17 @@ public class MainWindow {
 						.addGroup(gl_pnlPlayControl.createSequentialGroup()
 							.addComponent(lblZero)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(sliderSong, GroupLayout.DEFAULT_SIZE, 637, Short.MAX_VALUE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(sliderSong, GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
+							.addGap(12)
 							.addComponent(lblSongDuration)
 							.addContainerGap())
 						.addGroup(gl_pnlPlayControl.createSequentialGroup()
 							.addGroup(gl_pnlPlayControl.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_pnlPlayControl.createSequentialGroup()
-									.addComponent(btnPlay, GroupLayout.PREFERRED_SIZE, 61, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(btnStop, GroupLayout.PREFERRED_SIZE, 58, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(btnPause, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE))
+									.addGap(16)
+									.addComponent(tglbtnPlayPause, GroupLayout.PREFERRED_SIZE, 58, GroupLayout.PREFERRED_SIZE)
+									.addGap(18)
+									.addComponent(btnStop, GroupLayout.PREFERRED_SIZE, 58, GroupLayout.PREFERRED_SIZE))
 								.addComponent(lblSongName))
 							.addGap(220))))
 		);
@@ -476,14 +487,13 @@ public class MainWindow {
 					.addComponent(lblSongName)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_pnlPlayControl.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnPlay)
-						.addComponent(btnStop)
-						.addComponent(btnPause, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+						.addComponent(tglbtnPlayPause, 0, 0, Short.MAX_VALUE)
+						.addComponent(btnStop))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_pnlPlayControl.createParallelGroup(Alignment.TRAILING)
-						.addComponent(sliderSong, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblSongDuration)
-						.addComponent(lblZero))
+						.addComponent(lblZero)
+						.addComponent(sliderSong, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		pnlPlayControl.setLayout(gl_pnlPlayControl);
