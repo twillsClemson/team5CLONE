@@ -193,31 +193,30 @@ public class SettingsWindow {
 		btnApplyChanges.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ArrayList<Album> approve = new ArrayList<Album>();
+				Map<String, Album> lib = setting.getLibraryAlbums();
 				Album al = null;
-				for(int i = 1; i < table_1.getRowCount(); i++)
+				for(int i = 0; i < table_1.getRowCount(); i++)
 				{
 					al = new Album();
-					if(table_1.getModel().getValueAt(i, 0) != null)
-					{
-						al = setting.getAlbum((String)table_1.getModel().getValueAt(i, 0));
-						al.setApprovalLevel((int)table_1.getModel().getValueAt(i, 1));
-						approve.add(al);
-					}
+					System.out.println(table_1.getModel().getValueAt(i, 0));
+					al = lib.get(((String)table_1.getModel().getValueAt(i, 0)));
+					al.setApprovalLevel((int)table_1.getModel().getValueAt(i, 1));
+					approve.add(al);
 				}
 				ArrayList<UserProfiles> profs = new ArrayList<UserProfiles>();
 				UserProfiles temp = null;
-				for(int i = 1; i < table.getRowCount(); i++)
+				for(int i = 0; i < table.getRowCount(); i++)
 				{
 					temp = new UserProfiles();
+					String temp1 = table.getModel().getValueAt(i, 3).toString();
 					temp.setName((String)table.getModel().getValueAt(i, 0));
 					temp.setPIN((int)table.getModel().getValueAt(i, 1));
 					temp.setAdmin((boolean)table.getModel().getValueAt(i, 2));
-					temp.setRestrictionLevel((int)table.getModel().getValueAt(i, 3));
+					temp.setRestrictionLevel(Integer.parseInt(temp1));
 					temp.setProfilePicture((String)table.getModel().getValueAt(i, 4));
+					System.out.println(table.getModel().getValueAt(i, 0));
 					profs.add(temp);
 				}
-				setting.applySettings(approve, txtDefaultUrl.getText(), profs);
-				setting.writeSettings();
 			}
 		});
 		
@@ -342,23 +341,26 @@ public class SettingsWindow {
 				ArrayList<Album> approve = new ArrayList<Album>();
 				Map<String, Album> lib = setting.getLibraryAlbums();
 				Album al = null;
-				for(int i = 1; i < table_1.getRowCount(); i++)
+				for(int i = 0; i < table_1.getRowCount(); i++)
 				{
 					al = new Album();
+					System.out.println(table_1.getModel().getValueAt(i, 0));
 					al = lib.get(((String)table_1.getModel().getValueAt(i, 0)));
 					al.setApprovalLevel((int)table_1.getModel().getValueAt(i, 1));
 					approve.add(al);
 				}
 				ArrayList<UserProfiles> profs = new ArrayList<UserProfiles>();
 				UserProfiles temp = null;
-				for(int i = 1; i < table.getRowCount(); i++)
+				for(int i = 0; i < table.getRowCount(); i++)
 				{
 					temp = new UserProfiles();
+					String temp1 = table.getModel().getValueAt(i, 3).toString();
 					temp.setName((String)table.getModel().getValueAt(i, 0));
 					temp.setPIN((int)table.getModel().getValueAt(i, 1));
 					temp.setAdmin((boolean)table.getModel().getValueAt(i, 2));
-					temp.setRestrictionLevel((int)table.getModel().getValueAt(i, 3));
+					temp.setRestrictionLevel(Integer.parseInt(temp1));
 					temp.setProfilePicture((String)table.getModel().getValueAt(i, 4));
+					System.out.println(table.getModel().getValueAt(i, 0));
 					profs.add(temp);
 				}
 				setting.applySettings(approve, txtDefaultUrl.getText(), profs);
