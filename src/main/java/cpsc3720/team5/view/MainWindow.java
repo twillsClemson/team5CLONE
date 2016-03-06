@@ -72,6 +72,7 @@ public class MainWindow {
 	private JLabel lblAlbumTitle;
 	private JLabel lblAlbumArtist;
 	private JLabel lblSongName;
+	private JLabel lblSongDuration;
 	
 	JTabbedPane tabbedPane;
 //	private Map<DefaultMutableTreeNode, String> songURLs;
@@ -354,7 +355,7 @@ public class MainWindow {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				lblSongName.setText(albumTable.getValueAt(albumTable.getSelectedRow(),1).toString());
-				
+				lblSongDuration.setText(albumTable.getValueAt(albumTable.getSelectedRow(),3).toString());
 			}
 
 			@Override
@@ -464,7 +465,7 @@ public class MainWindow {
 		JSlider sliderSong = new JSlider();
 		sliderSong.setValue(0);
 		
-		JLabel lblSongDuration = new JLabel("1:00");
+		lblSongDuration = new JLabel("1:00");
 		lblSongDuration.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
 		icon = new ImageIcon(MainWindow.class.getResource("/icons/Pause.png"));
