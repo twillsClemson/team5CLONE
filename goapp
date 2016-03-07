@@ -5,6 +5,5 @@
 #     bash goapp
 #
 
-echo Launching app...
-java -jar build/libs/team5-all.jar
-
+echo Launching app
+./gradlew run
